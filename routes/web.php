@@ -1,9 +1,9 @@
 <?php
 
-// use App\Http\Controllers\EmployeeController;
-// use App\Http\Controllers\LeaveRequestController;
-// use App\Http\Controllers\LeaveTypeController;
-// use App\Http\Controllers\ReportController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');

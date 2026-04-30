@@ -7,23 +7,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEmployeeRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check() && auth()->user()->hasRole('hr_admin');
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $employee = $this->route('employee');
+
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . optional($employee)->user_id],
+            'department' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', 'max:255'],
+            'date_hired' => ['required', 'date'],
+            'phone' => ['required', 'string', 'max:50'],
+            'address' => ['required', 'string', 'max:500'],
         ];
     }
 }

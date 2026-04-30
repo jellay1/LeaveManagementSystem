@@ -9,14 +9,38 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="/">Leave Management</a>
-            <div class="navbar-nav ms-auto">
-                @auth
-                    <span class="navbar-text me-3">Welcome, {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
-                    <a class="nav-link" href="{{ route('logout') }}">Logout</a>
-                @else
-                    <a class="nav-link" href="{{ route('login') }}">Login</a>
-                @endauth
+            <a class="navbar-brand" href="{{ url('/') }}">Leave Management</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('leave-requests.index') }}">Leave Requests</a>
+                        </li>
+                        @if(auth()->user()->hasRole('hr_admin'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('employees.index') }}">Employees</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('leave-types.index') }}">Leave Types</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('reports') }}">Reports</a>
+                            </li>
+                        @endif
+                    @endauth
+                </ul>
+
+                <div class="d-flex align-items-center ms-auto">
+                    @auth
+                        <span class="navbar-text me-3">Welcome, {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
+                        </form>
+                    @else
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>

@@ -7,23 +7,22 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEmployeeRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check() && auth()->user()->hasRole('hr_admin');
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'department' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', 'max:255'],
+            'date_hired' => ['required', 'date'],
+            'phone' => ['required', 'string', 'max:50'],
+            'address' => ['required', 'string', 'max:500'],
         ];
     }
 }

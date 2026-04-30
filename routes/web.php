@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
@@ -10,6 +11,8 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     // Employee Management (HR Admin)
     Route::resource('employees', EmployeeController::class)->middleware('role:hr_admin');
 

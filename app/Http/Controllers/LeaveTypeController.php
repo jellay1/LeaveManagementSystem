@@ -2,63 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreLeaveTypeRequest;
+use App\Http\Requests\UpdateLeaveTypeRequest;
+use App\Models\LeaveType;
 
 class LeaveTypeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $leaveTypes = LeaveType::latest()->paginate(10);
+
+        return view('leave-types.index', compact('leaveTypes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('leave-types.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreLeaveTypeRequest $request)
     {
-        //
+        LeaveType::create($request->validated());
+
+        return redirect()->route('leave-types.index')->with('success', 'Leave type added successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(LeaveType $leaveType)
     {
-        //
+        return view('leave-types.show', compact('leaveType'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(LeaveType $leaveType)
     {
-        //
+        return view('leave-types.edit', compact('leaveType'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateLeaveTypeRequest $request, LeaveType $leaveType)
     {
-        //
+        $leaveType->update($request->validated());
+
+        return redirect()->route('leave-types.index')->with('success', 'Leave type updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(LeaveType $leaveType)
     {
-        //
+        $leaveType->delete();
+
+        return redirect()->route('leave-types.index')->with('success', 'Leave type removed successfully.');
     }
 }

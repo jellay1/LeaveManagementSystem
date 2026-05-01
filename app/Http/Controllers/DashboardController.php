@@ -16,46 +16,34 @@ class DashboardController extends Controller
         $today = Carbon::today()->toDateString();
         $year = Carbon::now()->year;
 
-        if ($user->hasRole('hr_admin')) {
-            $pendingApprovals = LeaveRequest::where('status', 'pending')->count();
-            $approvedYtd = LeaveRequest::where('status', 'approved')
-                ->whereYear('created_at', $year)
-                ->count();
-            $employees = Employee::count();
-            $recentRequests = LeaveRequest::with(['user', 'leaveType'])
-                ->latest()
-                ->take(5)
-                ->get();
-        } elseif ($user->hasRole('manager')) {
-            $department = optional($user->employee)->department;
-            $pendingApprovals = LeaveRequest::where('status', 'pending')
-                ->whereHas('user.employee', fn ($query) => $query->where('department', $department))
-                ->count();
-            $approvedYtd = LeaveRequest::where('status', 'approved')
-                ->whereYear('created_at', $year)
-                ->whereHas('user.employee', fn ($query) => $query->where('department', $department))
-                ->count();
-            $employees = Employee::where('department', $department)->count();
-            $recentRequests = LeaveRequest::with(['user', 'leaveType'])
-                ->whereHas('user.employee', fn ($query) => $query->where('department', $department))
-                ->latest()
-                ->take(5)
-                ->get();
-        } else {
-            $pendingApprovals = LeaveRequest::where('user_id', $user->id)
-                ->where('status', 'pending')
-                ->count();
-            $approvedYtd = LeaveRequest::where('user_id', $user->id)
-                ->where('status', 'approved')
-                ->whereYear('created_at', $year)
-                ->count();
-            $employees = 1;
-            $recentRequests = LeaveRequest::with(['user', 'leaveType'])
-                ->where('user_id', $user->id)
-                ->latest()
-                ->take(5)
-                ->get();
-        }
+        $department = optional($user->employee)->department;
+
+        $requestsScope = LeaveRequest::query()
+            ->when($user->hasRole('manager'), fn ($query) => $query->whereHas('user.employee', fn ($query) => $query->where('department', $department)))
+            ->when(!$user->hasRole('hr_admin') && !$user->hasRole('manager'), fn ($query) => $query->where('user_id', $user->id));
+
+        $pendingApprovals = (clone $requestsScope)
+            ->where('status', 'pending')
+            ->count();
+
+        $approvedYtd = (clone $requestsScope)
+            ->where('status', 'approved')
+            ->whereYear('created_at', $year)
+            ->count();
+
+        $employees = $user->hasRole('hr_admin')
+            ? Employee::count()
+            : ($user->hasRole('manager') ? Employee::where('department', $department)->count() : 1);
+
+        $recentRequests = (clone $requestsScope)
+            ->with(['user', 'user.employee', 'leaveType'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $recentRequests->each(function ($request) {
+            $request->days = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+        });
 
         $onLeaveToday = LeaveRequest::where('status', 'approved')
             ->whereDate('start_date', '<=', $today)
@@ -85,6 +73,30 @@ class DashboardController extends Controller
         $totalUsed = $balances->sum('used');
         $remainingDays = max(0, $totalAllocated - $totalUsed);
 
+        $departmentNames = Employee::query()
+            ->when($user->hasRole('manager'), fn ($query) => $query->where('department', $department))
+            ->when(!$user->hasRole('hr_admin') && !$user->hasRole('manager'), fn ($query) => $query->where('user_id', $user->id))
+            ->distinct()
+            ->pluck('department')
+            ->filter()
+            ->values();
+
+        $allDepartmentRequests = (clone $requestsScope)
+            ->with('user.employee')
+            ->get();
+
+        $departmentSummary = $departmentNames->map(function ($department) use ($allDepartmentRequests) {
+            $requests = $allDepartmentRequests->filter(fn ($request) => optional($request->user->employee)->department === $department);
+
+            return [
+                'department' => $department,
+                'pending' => $requests->where('status', 'pending')->count(),
+                'approved' => $requests->where('status', 'approved')->count(),
+                'rejected' => $requests->where('status', 'rejected')->count(),
+                'total_days' => $requests->sum(fn ($request) => Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1),
+            ];
+        })->values();
+
         return view('dashboard', compact(
             'pendingApprovals',
             'onLeaveToday',
@@ -92,7 +104,10 @@ class DashboardController extends Controller
             'employees',
             'balances',
             'remainingDays',
-            'recentRequests'
+            'recentRequests',
+            'departmentSummary',
+            'totalUsed',
+            'totalAllocated'
         ));
     }
 }

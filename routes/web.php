@@ -23,5 +23,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leave-requests', LeaveRequestController::class);
 
     // Reports (HR Admin)
-    Route::get('reports', [ReportController::class, 'index'])->middleware('role:hr_admin');
+    Route::get('reports', [ReportController::class, 'index'])->middleware('role:hr_admin')->name('reports');
 });

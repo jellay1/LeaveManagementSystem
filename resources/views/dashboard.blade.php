@@ -6,40 +6,38 @@
 <div class="container-fluid px-0">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
         <div>
-            <p class="text-uppercase text-muted small mb-1">Hello, {{ auth()->user()->name }}</p>
+            <p class="text-uppercase text-muted small mb-1">Workspace</p>
+            <h6 class="text-uppercase fw-semibold mb-2">Leave Management</h6>
+            <p class="text-uppercase text-muted small mb-1">Hello, {{ strtoupper(auth()->user()->name) }}</p>
             <h1 class="display-5 fw-bold mb-2">HR Command Center.</h1>
             <p class="text-muted mb-0">Monitor leave approvals, balances, and team activity from one place.</p>
         </div>
         <a href="{{ route('leave-requests.create') }}" class="btn btn-dark btn-lg px-4">Apply Leave</a>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100 px-4 py-4">
-                <div class="text-uppercase text-muted small mb-2">Pending Approvals</div>
-                <h2 class="fw-bold mb-1">{{ $pendingApprovals }}</h2>
-                <div class="text-muted">across organization</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100 px-4 py-4">
-                <div class="text-uppercase text-muted small mb-2">On Leave Today</div>
-                <h2 class="fw-bold mb-1">{{ $onLeaveToday }}</h2>
-                <div class="text-muted">approved absences</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100 px-4 py-4">
-                <div class="text-uppercase text-muted small mb-2">Approved (YTD)</div>
-                <h2 class="fw-bold mb-1">{{ $approvedYtd }}</h2>
-                <div class="text-muted">cumulative</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100 px-4 py-4">
-                <div class="text-uppercase text-muted small mb-2">Employees</div>
-                <h2 class="fw-bold mb-1">{{ $employees }}</h2>
-                <div class="text-muted">active headcount</div>
+    <div class="card border shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-0 text-center text-md-start">
+                <div class="col-12 col-md-6 col-xl-3 border-end border-bottom border-md-bottom-0 p-4">
+                    <div class="text-uppercase text-muted small mb-2">Pending Approvals</div>
+                    <h2 class="fw-bold mb-1">{{ $pendingApprovals ?? 0 }}</h2>
+                    <div class="text-muted">across organization</div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 border-end border-bottom border-md-bottom-0 p-4">
+                    <div class="text-uppercase text-muted small mb-2">On Leave Today</div>
+                    <h2 class="fw-bold mb-1">{{ $onLeaveToday ?? 0 }}</h2>
+                    <div class="text-muted">approved absences</div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 border-end border-bottom border-md-bottom-0 p-4">
+                    <div class="text-uppercase text-muted small mb-2">Approved (YTD)</div>
+                    <h2 class="fw-bold mb-1">{{ $approvedYtd ?? 0 }}</h2>
+                    <div class="text-muted">cumulative</div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 p-4">
+                    <div class="text-uppercase text-muted small mb-2">Employees</div>
+                    <h2 class="fw-bold mb-1">{{ $employees ?? 0 }}</h2>
+                    <div class="text-muted">active headcount</div>
+                </div>
             </div>
         </div>
     </div>
@@ -77,7 +75,7 @@
             <div class="card border-0 shadow-sm h-100 bg-dark text-white">
                 <div class="card-body">
                     <p class="text-uppercase text-muted small mb-2">Year Summary</p>
-                    <h1 class="display-4 fw-bold mb-3">{{ $remainingDays }}</h1>
+                    <h1 class="display-4 fw-bold mb-3">{{ $remainingDays ?? 0 }}</h1>
                     <p class="text-white-50 mb-4">days remaining</p>
 
                     <div class="d-flex justify-content-between text-white-50 small">
@@ -95,7 +93,7 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
                 <div>
@@ -109,23 +107,23 @@
                 <table class="table table-borderless align-middle mb-0">
                     <thead class="text-uppercase text-muted small border-bottom">
                         <tr>
-                            <th>Employee</th>
                             <th>Type</th>
                             <th>Dates</th>
+                            <th>Days</th>
+                            <th>Reason</th>
                             <th>Status</th>
-                            <th class="text-end">Requested</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($recentRequests as $request)
                             <tr>
-                                <td>{{ $request->user->name }}</td>
-                                <td>{{ $request->leaveType->name }}</td>
-                                <td>{{ $request->start_date }} – {{ $request->end_date }}</td>
+                                <td>{{ $request->leaveType?->name ?? '-' }}</td>
+                                <td>{{ $request->start_date }} &rarr; {{ $request->end_date }}</td>
+                                <td>{{ $request->days ?? 0 }}</td>
+                                <td>{{ $request->reason ?? '—' }}</td>
                                 <td>
                                     <span class="badge bg-{{ $request->status === 'approved' ? 'success' : ($request->status === 'rejected' ? 'danger' : 'warning') }} text-capitalize">{{ $request->status }}</span>
                                 </td>
-                                <td class="text-end text-muted small">{{ $request->created_at->format('Y-m-d') }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -135,6 +133,46 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="mb-1">Department Summary</h5>
+                    <p class="text-muted small mb-0">Leave activity broken down by department.</p>
+                </div>
+            </div>
+
+            @if($departmentSummary->isEmpty())
+                <div class="text-center text-muted py-4">No department summary available.</div>
+            @else
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead class="text-uppercase text-muted small border-bottom">
+                            <tr>
+                                <th>Department</th>
+                                <th>Pending</th>
+                                <th>Approved</th>
+                                <th>Rejected</th>
+                                <th class="text-end">Total Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($departmentSummary as $summary)
+                                <tr>
+                                    <td>{{ $summary['department'] }}</td>
+                                    <td>{{ $summary['pending'] }}</td>
+                                    <td>{{ $summary['approved'] }}</td>
+                                    <td>{{ $summary['rejected'] }}</td>
+                                    <td class="text-end">{{ $summary['total_days'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
     </div>
 </div>

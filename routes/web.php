@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveRequestController;
@@ -23,6 +24,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Leave Requests (All authenticated users)
     Route::resource('leave-requests', LeaveRequestController::class);
+    Route::get('approvals', [LeaveRequestController::class, 'approvals'])->name('approvals');
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar');
+    Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
     // Reports (HR Admin)
     Route::get('reports', [ReportController::class, 'index'])->middleware('role:hr_admin')->name('reports');

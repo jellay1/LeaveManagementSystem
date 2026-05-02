@@ -15,20 +15,48 @@ class LeaveRequestController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $status = request('status');
+        $allowedStatuses = ['pending', 'approved', 'rejected', 'cancelled'];
 
         if ($user->hasRole('hr_admin')) {
-            $leaveRequests = LeaveRequest::with(['user.employee', 'leaveType', 'approver'])->latest()->paginate(12);
+            $query = LeaveRequest::with(['user.employee', 'leaveType', 'approver']);
         } elseif ($user->hasRole('manager')) {
             $department = optional($user->employee)->department;
-            $leaveRequests = LeaveRequest::with(['user.employee', 'leaveType', 'approver'])
-                ->whereHas('user.employee', fn ($query) => $query->where('department', $department))
-                ->latest()
-                ->paginate(12);
+            $query = LeaveRequest::with(['user.employee', 'leaveType', 'approver'])
+                ->whereHas('user.employee', fn ($query) => $query->where('department', $department));
         } else {
-            $leaveRequests = $user->leaveRequests()->with(['leaveType', 'approver'])->latest()->paginate(12);
+            $query = $user->leaveRequests()->with(['leaveType', 'approver']);
         }
 
-        return view('leave-requests.index', compact('leaveRequests'));
+        if (in_array($status, $allowedStatuses, true)) {
+            $query->where('status', $status);
+        } else {
+            $status = 'all';
+        }
+
+        $leaveRequests = $query->latest()->paginate(12)->withQueryString();
+
+        return view('leave-requests.index', compact('leaveRequests', 'status'));
+    }
+
+    public function approvals()
+    {
+        $user = auth()->user();
+
+        if ($user->hasRole('hr_admin')) {
+            $query = LeaveRequest::with(['user.employee', 'leaveType', 'approver']);
+        } elseif ($user->hasRole('manager')) {
+            $department = optional($user->employee)->department;
+            $query = LeaveRequest::with(['user.employee', 'leaveType', 'approver'])
+                ->whereHas('user.employee', fn ($query) => $query->where('department', $department));
+        } else {
+            return redirect()->route('leave-requests.index')->with('warning', 'Approvals are only available for managers and HR.');
+        }
+
+        $leaveRequests = $query->where('status', 'pending')->latest()->paginate(12)->withQueryString();
+        $status = 'pending';
+
+        return view('leave-requests.index', compact('leaveRequests', 'status'));
     }
 
     public function create()

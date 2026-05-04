@@ -12,7 +12,18 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with('user')->latest()->paginate(12);
+        $search = request('search');
+
+        $employees = Employee::with('user')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
 
         return view('employees.index', compact('employees'));
     }

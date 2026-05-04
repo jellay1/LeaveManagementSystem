@@ -168,6 +168,68 @@
             color: #fff;
             border-color: #212529;
         }
+        .search-form {
+            max-width: 540px;
+        }
+        .search-input-group {
+            display: flex;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+        .search-input {
+            border: none;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            min-width: 0;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .btn-search {
+            background: transparent;
+            color: #495057;
+            border: none;
+            border-left: 1px solid #dee2e6;
+            padding: 0 1.25rem;
+            font-weight: 600;
+        }
+        .btn-search:hover {
+            background: #f8f9fa;
+        }
+        .btn-new-employee {
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: .85rem;
+            padding: .9rem 1.5rem;
+            font-weight: 700;
+            letter-spacing: .03em;
+            min-height: 52px;
+        }
+        .btn-new-employee:hover {
+            background: #222;
+        }
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            height: 36px;
+            padding: 0 .85rem;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            color: #212529;
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 999px;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,.02);
+        }
         .page-card {
             background: #fff;
             border: 1px solid #e5e5e5;

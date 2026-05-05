@@ -25,7 +25,9 @@ class EmployeeController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('employees.index', compact('employees'));
+        $managers = User::where('role', 'manager')->get();
+
+        return view('employees.index', compact('employees', 'managers'));
     }
 
     public function create()
@@ -39,7 +41,7 @@ class EmployeeController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'employee',
+            'role' => $request->role ?? 'employee',
         ]);
 
         $user->employee()->create($request->only(['department', 'position', 'date_hired', 'phone', 'address']));
@@ -74,5 +76,35 @@ class EmployeeController extends Controller
         $employee->user->delete();
 
         return redirect()->route('employees.index')->with('success', 'Employee record deleted successfully.');
+    }
+
+    public function search()
+    {
+        $search = request('q');
+
+        $employees = Employee::with('user')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->limit(50)
+            ->get();
+
+        return response()->json([
+            'data' => $employees->map(function ($employee) {
+                return [
+                    'id' => $employee->id,
+                    'name' => $employee->user->name,
+                    'email' => $employee->user->email,
+                    'department' => $employee->department,
+                    'position' => $employee->position,
+                    'role' => $employee->user->role,
+                    'date_hired' => $employee->date_hired,
+                ];
+            })
+        ]);
     }
 }

@@ -3,10 +3,12 @@
 @section('title', 'HR Reports')
 
 @section('content')
-<div class="mb-4">
-    <h1 class="h3">HR Dashboard</h1>
-    <p class="text-muted">Summary of leave balances and department requests for {{ $year }}.</p>
+<div class="page-heading mb-4">
+    <div class="page-label">Analytics</div>
+    <h1 class="page-title">HR Reports.</h1>
 </div>
+
+<p class="text-muted mb-4">Summary of leave balances and department requests for {{ $year }}.</p>
 
 <div class="row g-4 mb-4">
     <div class="col-md-6">
@@ -45,31 +47,31 @@
     </div>
 </div>
 
-<div class="card shadow-sm">
+<div class="page-card">
     <div class="card-body">
-        <h5 class="card-title mb-3">Leave Balances</h5>
+        <h5 class="card-title mb-4">Leave Balances</h5>
 
         <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead>
+            <table class="table table-hover table-sm mb-0 align-middle">
+                <thead class="border-bottom">
                     <tr>
-                        <th>Employee</th>
-                        <th>Leave Type</th>
-                        <th>Year</th>
-                        <th>Used Days</th>
+                        <th class="py-3">Employee</th>
+                        <th class="py-3">Leave Type</th>
+                        <th class="py-3">Year</th>
+                        <th class="py-3">Used Days</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($balances as $balance)
                         <tr>
-                            <td>{{ optional($balance->user)->name ?? 'Unknown' }}</td>
+                            <td class="fw-semibold">{{ optional($balance->user)->name ?? 'Unknown' }}</td>
                             <td>{{ optional($balance->leaveType)->name ?? 'Unknown' }}</td>
                             <td>{{ $balance->year }}</td>
-                            <td>{{ $balance->used_days }}</td>
+                            <td><span class="badge bg-warning text-dark">{{ $balance->used_days }}</span></td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No leave balances available.</td>
+                            <td colspan="4" class="text-center text-muted py-4">No leave balances available.</td>
                         </tr>
                     @endforelse
                 </tbody>

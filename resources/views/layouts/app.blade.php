@@ -6,6 +6,7 @@
     <title>@yield('title', 'Leave Management')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
     <style>
@@ -179,6 +180,10 @@
             overflow: hidden;
             box-shadow: 0 1px 4px rgba(0,0,0,.04);
         }
+        [x-cloak] {
+            display: none !important;
+        }
+
         .search-input {
             border: none;
             padding: 1rem 1.25rem;
@@ -209,9 +214,12 @@
             font-weight: 700;
             letter-spacing: .03em;
             min-height: 52px;
+            transition: all 0.3s ease;
         }
         .btn-new-employee:hover {
-            background: #222;
+            background: #fff;
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         .role-badge {
             display: inline-flex;

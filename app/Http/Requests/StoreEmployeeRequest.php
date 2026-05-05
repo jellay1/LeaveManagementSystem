@@ -23,6 +23,7 @@ class StoreEmployeeRequest extends FormRequest
             'date_hired' => ['required', 'date'],
             'phone' => ['required', 'string', 'max:50'],
             'address' => ['required', 'string', 'max:500'],
+            'role' => ['required', 'string', 'in:employee,manager,hr_admin'],
         ];
     }
 }

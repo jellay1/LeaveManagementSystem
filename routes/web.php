@@ -16,7 +16,13 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Manager Dashboard
+    Route::get('manager-dashboard', [\App\Http\Controllers\ManagerDashboardController::class, 'index'])->middleware('role:manager')->name('manager-dashboard');
+    Route::post('manager-dashboard/approve/{leaveRequest}', [\App\Http\Controllers\ManagerDashboardController::class, 'approve'])->middleware('role:manager')->name('manager-dashboard.approve');
+    Route::post('manager-dashboard/reject/{leaveRequest}', [\App\Http\Controllers\ManagerDashboardController::class, 'reject'])->middleware('role:manager')->name('manager-dashboard.reject');
+
     // Employee Management (HR Admin)
+    Route::get('employees/search', [EmployeeController::class, 'search'])->middleware('role:hr_admin')->name('employees.search');
     Route::resource('employees', EmployeeController::class)->middleware('role:hr_admin');
 
     // Leave Types (HR Admin)

@@ -40,6 +40,7 @@ class FortifyServiceProvider extends ServiceProvider
 
     Fortify::createUsersUsing(CreateNewUser::class);
         app()->singleton(\Laravel\Fortify\Contracts\RegisterResponse::class, RegisterResponse::class);
+        app()->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, \App\Actions\Fortify\LoginResponse::class);
     Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
     Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
     Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);

@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar');
     Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
-    // Reports (HR Admin)
-    Route::get('reports', [ReportController::class, 'index'])->middleware('role:hr_admin')->name('reports');
+    // Reports (HR Admin & Manager)
+    Route::get('reports', [ReportController::class, 'index'])->middleware('role:hr_admin,manager')->name('reports');
+    Route::get('reports/export-csv', [ReportController::class, 'exportCsv'])->middleware('role:hr_admin,manager')->name('reports.export-csv');
 });

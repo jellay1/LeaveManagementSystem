@@ -143,11 +143,42 @@
                     <h5 class="mb-1">Department Summary</h5>
                     <p class="text-muted small mb-0">Leave activity broken down by department.</p>
                 </div>
+                <a href="{{ route('reports.export-csv') }}" class="btn btn-sm btn-dark">
+                    <i class="bi bi-download me-1"></i>Export CSV
+                </a>
             </div>
 
             @if($departmentSummary->isEmpty())
                 <div class="text-center text-muted py-4">No department summary available.</div>
             @else
+                <!-- Stats Cards -->
+                <div class="row g-2 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="text-uppercase text-muted small mb-1">Pending</div>
+                            <div class="fw-bold" style="font-size:1.5rem;">{{ $departmentSummary->sum('pending') }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="text-uppercase text-muted small mb-1">Approved</div>
+                            <div class="fw-bold" style="font-size:1.5rem;">{{ $departmentSummary->sum('approved') }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="text-uppercase text-muted small mb-1">Rejected</div>
+                            <div class="fw-bold" style="font-size:1.5rem;">{{ $departmentSummary->sum('rejected') }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded bg-light">
+                            <div class="text-uppercase text-muted small mb-1">On Leave Today</div>
+                            <div class="fw-bold" style="font-size:1.5rem;">{{ $onLeaveToday ?? 0 }}</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-borderless align-middle mb-0">
                         <thead class="text-uppercase text-muted small border-bottom">
@@ -176,4 +207,6 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 @endsection

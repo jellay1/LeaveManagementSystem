@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateLeaveRequestRequest;
 use App\Models\LeaveBalance;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -103,6 +104,9 @@ class LeaveRequestController extends Controller
             $leaveBalance->increment('used_days', $requestedDays);
         }
 
+        // Send notification
+        NotificationService::leaveRequestCreated($leaveRequest);
+
         return redirect()->route('leave-requests.index')->with('success', 'Leave request submitted successfully.');
     }
 
@@ -148,6 +152,15 @@ class LeaveRequestController extends Controller
                 'year' => Carbon::parse($leaveRequest->start_date)->year,
             ]);
             $balance->increment('used_days', $days);
+
+            // Send approval notification
+            NotificationService::leaveRequestApproved($leaveRequest);
+        } elseif ($data['status'] === 'rejected') {
+            // Send rejection notification
+            NotificationService::leaveRequestRejected($leaveRequest);
+        }
+
+        return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');
         }
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');

@@ -159,6 +159,7 @@
             },
             scales: {
                 x: {
+                    offset: true,
                     grid: { display: false },
                     border: { display: false },
                     ticks: {

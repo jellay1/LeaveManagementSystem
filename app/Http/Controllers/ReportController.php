@@ -70,56 +70,50 @@ class ReportController extends Controller
 
     public function exportCsv()
     {
-        $year  = now()->year;
-        $today = Carbon::today();
-
-        // Get department summary data
-        $deptChart = LeaveRequest::select(
-                'employees.department',
-                DB::raw("SUM(CASE WHEN leave_requests.status = 'pending'  THEN 1 ELSE 0 END) as pending"),
-                DB::raw("SUM(CASE WHEN leave_requests.status = 'approved' THEN 1 ELSE 0 END) as approved"),
-                DB::raw("SUM(CASE WHEN leave_requests.status = 'rejected' THEN 1 ELSE 0 END) as rejected"),
-                DB::raw('COUNT(*) as total')
-            )
-            ->join('users',     'leave_requests.user_id', '=', 'users.id')
-            ->join('employees', 'employees.user_id',      '=', 'users.id')
-            ->groupBy('employees.department')
-            ->orderBy('employees.department')
+        // Get all leave requests with related data
+        $leaveRecords = LeaveRequest::with(['user', 'user.employee', 'leaveType', 'approver'])
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        // Build department summary
-        $departmentSummary = $deptChart->map(function ($row) {
-            return [
-                'department' => $row->department,
-                'pending'    => $row->pending,
-                'approved'   => $row->approved,
-                'rejected'   => $row->rejected,
-                'total_days' => LeaveRequest::whereHas('user.employee', function ($q) use ($row) {
-                                    $q->where('department', $row->department);
-                                })
-                                ->where('status', 'approved')
-                                ->get()
-                                ->sum(function ($request) {
-                                    return Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
-                                }),
-            ];
-        });
-
         // Create CSV content
-        $filename = 'leave_report_' . now()->format('Y-m-d') . '.csv';
+        $filename = 'leave_records_' . now()->format('Y-m-d_H-i-s') . '.csv';
         $handle = fopen('php://memory', 'w');
 
         // Write headers
-        fputcsv($handle, ['Department', 'Pending', 'Approved', 'Rejected', 'Total Days']);
+        fputcsv($handle, [
+            'Leave ID',
+            'Employee',
+            'Email',
+            'Department',
+            'Leave Type',
+            'Start',
+            'End',
+            'Days',
+            'Status',
+            'Reason',
+            'Remarks',
+            'Decided At',
+            'Created At',
+        ]);
 
         // Write data rows
-        foreach ($departmentSummary as $row) {
+        foreach ($leaveRecords as $record) {
+            $days = Carbon::parse($record->start_date)->diffInDays(Carbon::parse($record->end_date)) + 1;
+            
             fputcsv($handle, [
-                $row['department'],
-                $row['pending'],
-                $row['approved'],
-                $row['rejected'],
-                $row['total_days'],
+                $record->id,
+                $record->user->name ?? '',
+                $record->user->email ?? '',
+                $record->user->employee->department ?? '',
+                $record->leaveType->name ?? '',
+                $record->start_date,
+                $record->end_date,
+                $days,
+                $record->status,
+                $record->reason ?? '',
+                $record->remarks ?? '',
+                $record->approver->name ?? '',
+                $record->created_at->format('Y-m-d H:i:s'),
             ]);
         }
 
@@ -128,7 +122,7 @@ class ReportController extends Controller
         fclose($handle);
 
         return response($csv, 200, [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ]);
     }

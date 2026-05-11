@@ -9,13 +9,28 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    $user = auth()->user();
+
+    if ($user->hasRole('hr_admin')) {
+        return redirect()->route('dashboard');
+    }
+
+    if ($user->hasRole('manager')) {
+        return redirect()->route('manager-dashboard');
+    }
+
+    // default: employee
+    return redirect()->route('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])
+        ->middleware('role:hr_admin,employee,manager')
+        ->name('dashboard');
 
     // Notifications (All authenticated users)
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');

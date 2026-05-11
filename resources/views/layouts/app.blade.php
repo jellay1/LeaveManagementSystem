@@ -400,11 +400,6 @@
                             <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg></span>
                             Approvals
                         </a>
-                        <a href="{{ route('notifications.index') }}" class="nav-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.64 5.36 6 7.92 6 11v5l-1.7 1.7a1 1 0 0 0 .7 1.7h13a1 1 0 0 0 .7-1.7L18 16z"/></svg></span>
-                            Notifications
-                        </a>
-
                     @else
                         {{-- Default Sidebar for other roles/pages --}}
                         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -427,10 +422,7 @@
                             <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg></span>
                             Approvals
                         </a>
-                        <a href="{{ route('notifications.index') }}" class="nav-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.64 5.36 6 7.92 6 11v5l-1.7 1.7a1 1 0 0 0 .7 1.7h13a1 1 0 0 0 .7-1.7L18 16z"/></svg></span>
-                            Notifications
-                        </a>
+
                         <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
                             <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M6 7a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm4 7c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg></span>
                             Employees
@@ -470,9 +462,13 @@
                     <h2 class="mb-0">Leave Management</h2>
                 </div>
                 <div>
-                    @include('components.notification-bell')
+                    @auth
+                        @include('components.notification-bell')
+                    @endauth
                 </div>
+
             </div>
+
 
             <main class="page-content">
                 @if(session('success'))

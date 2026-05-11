@@ -23,7 +23,7 @@
         {{-- Notifications List --}}
         <template x-if="notifications.length === 0">
             <div class="dropdown-item-text text-center text-muted py-4">
-                <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:.5rem;opacity:.3;"></i>
+                <svg style="font-size:2rem;display:block;margin:0 auto .5rem;opacity:.3;width:2rem;height:2rem;" fill="currentColor" viewBox="0 0 24 24"><path d="M4 20h16v-2H4v2zm2-10h12V8H6v10zm14-6h-4V2h-4v4H4c-1.1 0-2 .9-2 2v8h0v6h20v-6h0v-8c0-1.1-.9-2-2-2z"/></svg>
                 <small>No notifications yet</small>
             </div>
         </template>
@@ -58,21 +58,29 @@ function notificationBell() {
         refreshInterval: null,
 
         async init() {
-            await this.loadNotifications();
-            // Refresh every 30 seconds
-            this.refreshInterval = setInterval(() => this.loadNotifications(), 30000);
+            try {
+                await this.loadNotifications();
+                // Refresh every 30 seconds
+                this.refreshInterval = setInterval(() => this.loadNotifications(), 30000);
+            } catch (error) {
+                console.warn('Notifications unavailable:', error);
+            }
         },
 
         async loadNotifications() {
             try {
                 const response = await fetch('{{ route("notifications.unread") }}');
+                if (!response.ok) throw new Error('Failed to load notifications');
                 this.notifications = await response.json();
 
                 const countResponse = await fetch('{{ route("notifications.unread-count") }}');
+                if (!countResponse.ok) throw new Error('Failed to get notification count');
                 const data = await countResponse.json();
-                this.unreadCount = data.count;
+                this.unreadCount = data.count || 0;
             } catch (error) {
-                console.error('Error loading notifications:', error);
+                console.warn('Error loading notifications:', error);
+                this.notifications = [];
+                this.unreadCount = 0;
             }
         },
 
@@ -85,26 +93,32 @@ function notificationBell() {
                         'Content-Type': 'application/json',
                     },
                 });
-                await this.loadNotifications();
+                if (response.ok) {
+                    await this.loadNotifications();
+                }
             } catch (error) {
-                console.error('Error marking notifications as read:', error);
+                console.warn('Error marking notifications as read:', error);
             }
         },
 
         formatTime(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
 
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays < 7) return `${diffDays}d ago`;
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
 
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            } catch {
+                return 'Recently';
+            }
         },
 
         destroy() {

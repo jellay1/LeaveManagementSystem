@@ -16,6 +16,11 @@ class DashboardController extends Controller
         $today = Carbon::today()->toDateString();
         $year = Carbon::now()->year;
 
+        // Check if user is a regular employee
+        if (!$user->hasRole('manager') && !$user->hasRole('hr_admin')) {
+            return $this->employeeDashboard($user, $year);
+        }
+
         $department = optional($user->employee)->department;
 
         $requestsScope = LeaveRequest::query()
@@ -106,6 +111,56 @@ class DashboardController extends Controller
             'remainingDays',
             'recentRequests',
             'departmentSummary',
+            'totalUsed',
+            'totalAllocated'
+        ));
+    }
+
+    /**
+     * Get the employee dashboard view
+     */
+    private function employeeDashboard($user, $year)
+    {
+        $leaveTypes = LeaveType::orderBy('name')->get();
+        $balanceRecords = LeaveBalance::with('leaveType')
+            ->where('user_id', $user->id)
+            ->where('year', $year)
+            ->get();
+
+        // Calculate leave balances
+        $balances = $leaveTypes->map(function ($type) use ($balanceRecords) {
+            $record = $balanceRecords->firstWhere('leave_type_id', $type->id);
+            $used = $record?->used_days ?? 0;
+            $allocation = $type->annual_allocation;
+
+            return [
+                'name' => $type->name,
+                'used' => $used,
+                'allocation' => $allocation,
+                'percent' => $allocation > 0 ? min(100, round(($used / $allocation) * 100)) : 0,
+            ];
+        });
+
+        // Calculate totals
+        $totalAllocated = $balances->sum('allocation');
+        $totalUsed = $balances->sum('used');
+        $remainingDays = max(0, $totalAllocated - $totalUsed);
+
+        // Get recent requests
+        $recentRequests = $user->leaveRequests()
+            ->with(['leaveType', 'approver'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $recentRequests->each(function ($request) {
+            $request->days = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+        });
+
+        return view('dashboard-employee', compact(
+            'balances',
+            'remainingDays',
+            'recentRequests',
             'totalUsed',
             'totalAllocated'
         ));

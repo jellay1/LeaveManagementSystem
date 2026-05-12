@@ -161,9 +161,6 @@ class LeaveRequestController extends Controller
         }
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');
-        }
-
-        return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');
     }
 
     public function destroy(LeaveRequest $leaveRequest)

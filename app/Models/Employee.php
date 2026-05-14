@@ -13,6 +13,7 @@ class Employee extends Model
         'date_hired',
         'phone',
         'address',
+        'manager_id',
     ];
 
     /**
@@ -21,5 +22,13 @@ class Employee extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the manager of this employee.
+     */
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
     }
 }

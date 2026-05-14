@@ -19,28 +19,59 @@ class DatabaseSeeder extends Seeder
         // Create HR Admin
         User::factory()->create([
             'name' => 'HR Admin',
-            'email' => 'hr@example.com',
-            'password' => Hash::make('password'),
+            'email' => 'hr@acme.com',
+            'password' => 'hr12345',
             'role' => 'hr_admin',
         ]);
 
-        // Create Manager
+        // Create Manager for Engineering Department
         User::factory()->create([
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => Hash::make('password'),
+            'name' => 'Engineering Manager',
+            'email' => 'manager.eng@acme.com',
+            'password' => 'managert1k',
             'role' => 'manager',
         ]);
 
-        // Create Employee
+        // Create Manager for IT Department
         User::factory()->create([
-            'name' => 'Employee',
-            'email' => 'employee@example.com',
-            'password' => Hash::make('password'),
+            'name' => 'IT Manager',
+            'email' => 'manager.it@acme.com',
+            'password' => 'password',
+            'role' => 'manager',
+        ]);
+
+        // Create Manager for HR Department
+        User::factory()->create([
+            'name' => 'HR Manager',
+            'email' => 'manager.hr@acme.com',
+            'password' => 'password',
+            'role' => 'manager',
+        ]);
+
+        // Create Employees
+        User::factory()->create([
+            'name' => 'Alice Employee',
+            'email' => 'alice@acme.com',
+            'password' => 'employee123',
+            'role' => 'employee',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Jane Employee',
+            'email' => 'jane@acme.com',
+            'password' => 'password',
+            'role' => 'employee',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Bob Employee',
+            'email' => 'bob@acme.com',
+            'password' => 'password',
             'role' => 'employee',
         ]);
 
         $this->call(LeaveTypeSeeder::class);
         $this->call(EmployeeSeeder::class);
+        $this->call(LeaveBalanceSeeder::class);
     }
 }

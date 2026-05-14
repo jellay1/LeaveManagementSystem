@@ -20,9 +20,12 @@ class ManagerDashboardController extends Controller
         $today = Carbon::today()->toDateString();
         $year = Carbon::now()->year;
 
-        // Get all leave requests from the manager's department
+        // Get all employees managed by this manager
+        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
+
+        // Get all leave requests from employees managed by this manager
         $allDepartmentRequests = LeaveRequest::query()
-            ->whereHas('user.employee', fn ($query) => $query->where('department', $department))
+            ->whereIn('user_id', $managedEmployeeIds)
             ->with(['user', 'user.employee', 'leaveType', 'approver'])
             ->get();
 
@@ -61,7 +64,7 @@ class ManagerDashboardController extends Controller
             ->count();
 
         // Active Headcount in department
-        $activeEmployees = \App\Models\Employee::where('department', $department)->count();
+        $activeEmployees = $user->managedEmployees()->count();
 
         // Manager's own leave balances
         $myBalances = \App\Models\LeaveBalance::with('leaveType')
@@ -92,9 +95,10 @@ class ManagerDashboardController extends Controller
     public function approve(LeaveRequest $leaveRequest)
     {
         $user = auth()->user();
+        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
 
-        // Check authorization
-        if (!$user->hasRole('manager') || optional($user->employee)->department !== optional($leaveRequest->user->employee)->department) {
+        // Check authorization - can only approve requests from managed employees
+        if (!$user->hasRole('manager') || !$managedEmployeeIds->contains($leaveRequest->user_id)) {
             abort(403, 'Unauthorized');
         }
 
@@ -110,9 +114,10 @@ class ManagerDashboardController extends Controller
     public function reject(LeaveRequest $leaveRequest)
     {
         $user = auth()->user();
+        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
 
-        // Check authorization
-        if (!$user->hasRole('manager') || optional($user->employee)->department !== optional($leaveRequest->user->employee)->department) {
+        // Check authorization - can only reject requests from managed employees
+        if (!$user->hasRole('manager') || !$managedEmployeeIds->contains($leaveRequest->user_id)) {
             abort(403, 'Unauthorized');
         }
 

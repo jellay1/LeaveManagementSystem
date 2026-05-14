@@ -3,77 +3,101 @@
 @section('title', 'Request Leave')
 
 @section('content')
-<div class="page-card">
-    <div class="card-header">
-        <div>
-            <div class="form-heading">New request</div>
-            <h1 class="form-title">Apply for leave.</h1>
-        </div>
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">New request</p>
+        <h1 class="text-4xl font-bold text-slate-900">Apply for Leave</h1>
     </div>
 
-    <div class="card-body">
-        <div class="row gx-4">
-            <div class="col-xl-8">
-                <form method="POST" action="{{ route('leave-requests.store') }}">
-                    @csrf
+    <!-- Form and Summary Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Form Section -->
+        <div class="lg:col-span-2">
+            <form method="POST" action="{{ route('leave-requests.store') }}" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                @csrf
 
-                    <div class="mb-4">
-                        <label for="leave_type_id" class="field-label">Leave Type</label>
-                        <select id="leave_type_id" name="leave_type_id" class="form-select @error('leave_type_id') is-invalid @enderror" required>
-                            <option value="">Select a leave type</option>
-                            @foreach($leaveTypes as $type)
-                                <option value="{{ $type->id }}" {{ old('leave_type_id') == $type->id ? 'selected' : '' }}>{{ $type->name }} ({{ $type->annual_allocation }} days)</option>
-                            @endforeach
-                        </select>
-                        @error('leave_type_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <!-- Leave Type Field -->
+                <div class="mb-6">
+                    <label for="leave_type_id" class="block text-sm font-semibold text-slate-700 mb-2">Leave Type</label>
+                    <select id="leave_type_id" name="leave_type_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('leave_type_id') border-red-500 @enderror" required>
+                        <option value="">Select a leave type</option>
+                        @foreach($leaveTypes as $type)
+                            <option value="{{ $type->id }}" {{ old('leave_type_id') == $type->id ? 'selected' : '' }}>
+                                {{ $type->name }} ({{ $type->annual_allocation }} days)
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('leave_type_id')
+                        <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Date Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="start_date" class="block text-sm font-semibold text-slate-700 mb-2">Start Date</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('start_date') border-red-500 @enderror" required>
+                        @error('start_date')
+                            <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="end_date" class="block text-sm font-semibold text-slate-700 mb-2">End Date</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('end_date') border-red-500 @enderror" required>
+                        @error('end_date')
+                            <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Reason Field -->
+                <div class="mb-6">
+                    <label for="reason" class="block text-sm font-semibold text-slate-700 mb-2">Reason</label>
+                    <textarea id="reason" name="reason" rows="5" placeholder="Please provide a reason for your leave request..." class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('reason') border-red-500 @enderror">{{ old('reason') }}</textarea>
+                    @error('reason')
+                        <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex gap-3">
+                    <button type="submit" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition shadow-md">
+                        Submit Request
+                    </button>
+                    <a href="{{ route('leave-requests.index') }}" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Request Summary Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 sticky top-8">
+                <h3 class="text-lg font-bold text-slate-900 mb-6">Request Summary</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-200">
+                        <span class="text-sm text-slate-600">Days requested</span>
+                        <span id="daysRequested" class="text-2xl font-bold text-slate-900">0</span>
                     </div>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <div>
-                                <label for="start_date" class="field-label">Start Date</label>
-                                <input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" class="form-control @error('start_date') is-invalid @enderror" required>
-                                @error('start_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <label for="end_date" class="field-label">End Date</label>
-                                <input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" class="form-control @error('end_date') is-invalid @enderror" required>
-                                @error('end_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                        </div>
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-200">
+                        <span class="text-sm text-slate-600">Request type</span>
+                        <span id="summaryType" class="font-semibold text-slate-900">—</span>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="reason" class="field-label">Reason</label>
-                        <textarea id="reason" name="reason" rows="5" class="form-control @error('reason') is-invalid @enderror">{{ old('reason') }}</textarea>
-                        @error('reason')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="pt-2 text-xs text-slate-600">
+                        <p>Choose dates and type to preview your request summary</p>
                     </div>
+                </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn-submit-request">Submit request</button>
-                        <a href="{{ route('leave-requests.index') }}" class="btn btn-outline-secondary btn-cancel-request">Cancel</a>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-xl-4">
-                <div class="summary-panel">
-                    <h3>Request summary</h3>
-                    <div class="summary-item">
-                        <span>Days requested</span>
-                        <span id="daysRequested" class="summary-value">0</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Request type</span>
-                        <span id="summaryType" class="summary-value">—</span>
-                    </div>
-                    <div class="summary-item">
-                        <div>
-                            <div class="summary-note">Choose dates and type to preview</div>
-                        </div>
-                    </div>
+                <!-- Info Box -->
+                <div class="mt-6 p-4 bg-slate-100 rounded-lg border border-slate-200">
+                    <p class="text-xs text-slate-700">
+                        <strong>Tip:</strong> Make sure your selected dates are within the working calendar and you have sufficient leave balance.
+                    </p>
                 </div>
             </div>
         </div>

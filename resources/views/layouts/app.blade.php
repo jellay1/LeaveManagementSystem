@@ -4,488 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Leave Management')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body>
     <style>
-        body {
-            background: #f2f2f2;
-            min-height: 100vh;
-        }
-        .app-shell {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 260px;
-            background: #fff;
-            border-right: 1px solid #e5e5e5;
-            display: flex;
-            flex-direction: column;
-            padding: 2rem 1.5rem;
-        }
-        .sidebar .brand {
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            margin-bottom: .25rem;
-        }
-        .sidebar .brand-subtitle {
-            font-size: .75rem;
-            letter-spacing: .2em;
-            text-transform: uppercase;
-            color: #6c757d;
-            margin-bottom: 1.5rem;
-        }
-        .sidebar .nav-link {
-            color: #343a40;
-            font-weight: 500;
-            padding: .75rem 0;
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            border-radius: .5rem;
-        }
-        .sidebar .nav-icon {
-            width: 1.35rem;
-            height: 1.35rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            flex-shrink: 0;
-        }
-        .sidebar .nav-link:hover .nav-icon,
-        .sidebar .nav-link.active .nav-icon {
-            color: #0d6efd;
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: #f8f9fa;
-            text-decoration: none;
-        }
-        .sidebar .divider {
-            border-top: 1px solid #e5e5e5;
-            margin: 1.5rem 0;
-        }
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid #e5e5e5;
-        }
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .page-header {
-            background: #fff;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 1.25rem 1.75rem;
-        }
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #dee2e6;
-            border-radius: .75rem;
-            background: #fff;
-            color: #495057;
-            box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            transition: border-color .15s ease, color .15s ease, background .15s ease;
-        }
-        .notification-btn:hover,
-        .notification-btn:focus {
-            border-color: #adb5bd;
-            color: #212529;
-            background: #f8f9fa;
-        }
-        .notification-btn svg {
-            width: 1.1rem;
-            height: 1.1rem;
-        }
-        .page-content {
-            flex: 1;
-            padding: 1.75rem;
-        }
-        .card-compact {
-            border: 1px solid #e5e5e5;
-            border-radius: .5rem;
-            overflow: hidden;
-        }
-        .card-compact .card-body {
-            padding: 1.5rem;
-        }
-        .stats-row .stat-card {
-            border-right: 1px solid #e5e5e5;
-        }
-        .stats-row .stat-card:last-child {
-            border-right: none;
-        }
-        .stats-row .stat-card .text-muted {
-            color: #6c757d;
-        }
-        .table th,
-        .table td {
-            border-top: none;
-        }
-        .page-heading {
-            margin-bottom: 1rem;
-        }
-        .page-heading .page-label {
-            text-transform: uppercase;
-            letter-spacing: .24em;
-            font-size: .75rem;
-            color: #6c757d;
-            margin-bottom: .5rem;
-        }
-        .page-heading .page-title {
-            font-size: clamp(2rem, 2.4vw, 3rem);
-            font-weight: 700;
-            margin: 0;
-            line-height: 1;
-        }
-        .filter-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .5rem;
-            margin-bottom: 1.5rem;
-        }
-        .filter-tabs .btn {
-            border-radius: .35rem;
-            padding: .625rem 1rem;
-            font-weight: 600;
-            color: #495057;
-            background: #fff;
-            border: 1px solid #dee2e6;
-        }
-        .filter-tabs .btn.active {
-            background: #212529;
-            color: #fff;
-            border-color: #212529;
-        }
-        .search-form {
-            max-width: 540px;
-        }
-        .search-input-group {
-            display: flex;
-            background: #fff;
-            border: 1px solid #dee2e6;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0,0,0,.04);
-        }
         [x-cloak] {
             display: none !important;
         }
-
-        .search-input {
-            border: none;
-            padding: 1rem 1.25rem;
-            font-size: 1rem;
-            min-width: 0;
-        }
-        .search-input:focus {
-            outline: none;
-            box-shadow: none;
-        }
-        .btn-search {
-            background: transparent;
-            color: #495057;
-            border: none;
-            border-left: 1px solid #dee2e6;
-            padding: 0 1.25rem;
-            font-weight: 600;
-        }
-        .btn-search:hover {
-            background: #f8f9fa;
-        }
-        .btn-new-employee {
-            background: #000;
-            color: #fff;
-            border: none;
-            border-radius: .85rem;
-            padding: .9rem 1.5rem;
-            font-weight: 700;
-            letter-spacing: .03em;
-            min-height: 52px;
-            transition: all 0.3s ease;
-        }
-        .btn-new-employee:hover {
-            background: #fff;
-            color: #000;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 120px;
-            height: 36px;
-            padding: 0 .85rem;
-            font-size: .75rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-            color: #212529;
-            background: #fff;
-            border: 1px solid #e9ecef;
-            border-radius: 999px;
-            text-transform: uppercase;
-            box-shadow: inset 0 0 0 1px rgba(0,0,0,.02);
-        }
-        .page-card {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: .85rem;
-            overflow: hidden;
-            box-shadow: 0 1px 2px rgba(0,0,0,.04);
-        }
-        .page-card .card-header {
-            padding: 1.5rem 1.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .page-card .card-header .btn-apply-leave {
-            background: #000;
-            color: #fff;
-            border: none;
-            padding: .85rem 1.1rem;
-            border-radius: .65rem;
-            font-weight: 700;
-            letter-spacing: .02em;
-        }
-        .page-card .card-header .btn-apply-leave:hover {
-            background: #222;
-        }
-        .page-card .card-body {
-            padding: 1.5rem 1.75rem 1.75rem;
-        }
-        .page-card .table {
-            margin-bottom: 0;
-        }
-        .table-sm th,
-        .table-sm td {
-            padding: .85rem .85rem;
-        }
-        .form-heading {
-            text-transform: uppercase;
-            letter-spacing: .18em;
-            font-size: .75rem;
-            color: #6c757d;
-            margin-bottom: .75rem;
-        }
-        .form-title {
-            font-size: clamp(2.5rem, 3vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1.75rem;
-            line-height: 1.05;
-        }
-        .field-label {
-            text-transform: uppercase;
-            letter-spacing: .16em;
-            font-size: .75rem;
-            color: #6c757d;
-            margin-bottom: .5rem;
-            display: block;
-        }
-        .summary-panel {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: .85rem;
-            padding: 1.5rem;
-            min-height: 100%;
-        }
-        .summary-panel h3 {
-            font-size: .95rem;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: #6c757d;
-            margin-bottom: 1.25rem;
-        }
-        .summary-panel .summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: .95rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .summary-panel .summary-item:last-child {
-            border-bottom: none;
-        }
-        .summary-panel .summary-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #212529;
-        }
-        .summary-panel .summary-note {
-            color: #6c757d;
-            font-size: .9rem;
-        }
-        .btn-submit-request {
-            background: #000;
-            border: none;
-            color: #fff;
-            padding: .85rem 1.25rem;
-            border-radius: .75rem;
-            font-weight: 700;
-            letter-spacing: .02em;
-        }
-        .btn-submit-request:hover {
-            background: #222;
-        }
-        .btn-cancel-request {
-            border-radius: .75rem;
-            padding: .85rem 1.25rem;
-        }
-        .badge-status {
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            padding: .3rem .55rem;
-            border-radius: .55rem;
-            font-weight: 700;
-            font-size: .75rem;
-            line-height: 1.1;
-        }
-        .badge-status.approved {
-            color: #218838;
-            background: rgba(40, 167, 69, .12);
-        }
-        .badge-status.pending {
-            color: #856404;
-            background: rgba(255, 193, 7, .15);
-        }
-        .badge-status.rejected {
-            color: #c82333;
-            background: rgba(220, 53, 69, .12);
-        }
-        .badge-status.cancelled {
-            color: #495057;
-            background: rgba(108, 117, 125, .12);
-        }
     </style>
-
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div>
-                <div class="brand">Leave-OS</div>
-                <div class="brand-subtitle">ACME CORP</div>
+</head>
+<body class="bg-slate-50">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
+            <div class="p-6 border-b border-slate-200">
+                <div class="text-xl font-bold text-slate-900 tracking-wide">Leave-OS</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-1">ACME CORP</div>
             </div>
 
             @auth
-                <nav class="nav flex-column mb-4">
-                    @if(auth()->user()->role === 'manager')
-                        {{-- Manager Dashboard Sidebar --}}
-                        <a href="{{ route('manager-dashboard') }}" class="nav-link {{ request()->routeIs('manager-dashboard') || request()->routeIs('manager-dashboard.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
-                            Dashboard
-                        </a>
-                        <a href="{{ route('leave-requests.create') }}" class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"/></svg></span>
-                            Apply Leave
-                        </a>
-                        <a href="{{ route('calendar') }}" class="nav-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 4h-1V2a1 1 0 0 0-2 0v2H8V2a1 1 0 1 0-2 0v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/></svg></span>
-                            Calendar
-                        </a>
-                        <a href="{{ route('approvals') }}" class="nav-link {{ request()->routeIs('approvals') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg></span>
-                            Approvals
+                <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                    {{-- Dashboard --}}
+                    @if(auth()->user()->hasRole('manager'))
+                        <a href="{{ route('manager-dashboard') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('manager-dashboard') || request()->routeIs('manager-dashboard.*') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('manager-dashboard') || request()->routeIs('manager-dashboard.*') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg>
+                            <span>Dashboard</span>
                         </a>
                     @else
-                        {{-- Default Sidebar for other roles/pages --}}
-                        <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg></span>
-                            Dashboard
+                        <a href="{{ route('dashboard') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg>
+                            <span>Dashboard</span>
                         </a>
-                        <a href="{{ route('leave-requests.index') }}" class="nav-link {{ request()->routeIs('leave-requests.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h1V3a1 1 0 0 1 1-1zm12 7H5v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"/></svg></span>
-                            My Leaves
-                        </a>
-                        <a href="{{ route('leave-requests.create') }}" class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"/></svg></span>
-                            Apply Leave
-                        </a>
-                        <a href="{{ route('calendar') }}" class="nav-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 4h-1V2a1 1 0 0 0-2 0v2H8V2a1 1 0 1 0-2 0v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/></svg></span>
-                            Calendar
-                        </a>
-                        <a href="{{ route('approvals') }}" class="nav-link {{ request()->routeIs('approvals') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg></span>
-                            Approvals
-                        </a>
+                    @endif
 
-                        <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M6 7a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm4 7c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg></span>
-                            Employees
+                    {{-- My Leaves (Employee & Manager only) --}}
+                    @if(!auth()->user()->hasRole('hr_admin') || auth()->user()->hasRole('manager'))
+                        <a href="{{ route('leave-requests.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('leave-requests.index') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('leave-requests.index') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h1V3a1 1 0 0 1 1-1zm12 7H5v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"/></svg>
+                            <span>My Leaves</span>
                         </a>
-                        <a href="{{ route('leave-types.index') }}" class="nav-link {{ request()->routeIs('leave-types.*') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm3 3h6v2H9V9zm0 4h6v2H9v-2z"/></svg></span>
-                            Leave Types
+                    @endif
+
+                    {{-- Apply Leave --}}
+                    <a href="{{ route('leave-requests.create') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('leave-requests.create') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                        <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('leave-requests.create') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M12 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"/></svg>
+                        <span>Apply Leave</span>
+                    </a>
+
+                    {{-- Calendar --}}
+                    <a href="{{ route('calendar') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('calendar') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                        <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('calendar') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2a1 1 0 0 0-2 0v2H8V2a1 1 0 1 0-2 0v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/></svg>
+                        <span>Calendar</span>
+                    </a>
+
+                    {{-- Approvals (Manager & HR) --}}
+                    @if(auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin'))
+                        <a href="{{ route('approvals') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('approvals') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('approvals') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg>
+                            <span>Approvals</span>
                         </a>
-                        <a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M5 21h14v-2H5v2zm3-6h2v4H8v-4zm4-8h2v12h-2V7zm4 4h2v8h-2v-8z"/></svg></span>
-                            Reports
+                    @endif
+
+                    {{-- Employees (HR Admin only) --}}
+                    @if(auth()->user()->hasRole('hr_admin'))
+                        <a href="{{ route('employees.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('employees.*') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('employees.*') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M6 7a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm4 7c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg>
+                            <span>Employees</span>
+                        </a>
+                    @endif
+
+                    {{-- Leave Types (HR Admin only) --}}
+                    @if(auth()->user()->hasRole('hr_admin'))
+                        <a href="{{ route('leave-types.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('leave-types.*') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('leave-types.*') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm3 3h6v2H9V9zm0 4h6v2H9v-2z"/></svg>
+                            <span>Leave Types</span>
+                        </a>
+                    @endif
+
+                    {{-- Reports (Manager & HR) --}}
+                    @if(auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin'))
+                        <a href="{{ route('reports') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('reports') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('reports') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M5 21h14v-2H5v2zm3-6h2v4H8v-4zm4-8h2v12h-2V7zm4 4h2v8h-2v-8z"/></svg>
+                            <span>Reports</span>
                         </a>
                     @endif
                 </nav>
 
-                <div class="sidebar-footer">
-                    <p class="text-uppercase text-muted small mb-1">Signed In</p>
-                    <div class="fw-semibold">{{ auth()->user()->name }}</div>
-                    <div class="text-muted small mb-3">{{ auth()->user()->email }}</div>
-                    <div class="text-uppercase text-muted small mb-1">{{ strtoupper(auth()->user()->role) }}</div>
-                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                <div class="border-t border-slate-200 p-4 mt-auto">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Signed In</p>
+                    <div class="font-semibold text-slate-900 text-sm">{{ auth()->user()->name }}</div>
+                    <div class="text-xs text-slate-600 mb-3">{{ auth()->user()->email }}</div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{{ strtoupper(auth()->user()->role) }}</div>
+                    <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100">Logout</button>
+                        <button type="submit" class="w-full px-3 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Logout</button>
                     </form>
                 </div>
-            @else
-                <nav class="nav flex-column mb-4">
-                    <a href="{{ route('login') }}" class="nav-link">Login</a>
-                </nav>
             @endauth
         </aside>
 
-        <div class="main">
-            <div class="page-header d-flex justify-content-between align-items-center">
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top Header -->
+            <div class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
                 <div>
-                    <div class="text-uppercase text-muted small mb-1">Workspace</div>
-                    <h2 class="mb-0">Leave Management</h2>
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Workspace</div>
+                    <h2 class="text-lg font-semibold text-slate-900">Leave Management</h2>
                 </div>
                 <div>
                     @auth
                         @include('components.notification-bell')
                     @endauth
                 </div>
-
             </div>
 
+            <!-- Page Content -->
+            <main class="flex-1 overflow-auto">
+                <div class="p-8">
+                    @if(session('success'))
+                        <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-sm">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    @if(session('warning'))
+                        <div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+                            {{ session('warning') }}
+                        </div>
+                    @endif
 
-            <main class="page-content">
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
-                @if(session('warning'))
-                    <div class="alert alert-warning">{{ session('warning') }}</div>
-                @endif
-
-                @yield('content')
+                    @yield('content')
+                </div>
             </main>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Modern Sidebar Styles */
+    </style>
 </body>
 </html>

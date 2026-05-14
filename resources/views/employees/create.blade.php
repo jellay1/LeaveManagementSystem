@@ -3,79 +3,88 @@
 @section('title', 'Add Employee')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-lg-9">
-        <div class="text-center mb-5">
-            <h1 class="display-6 fw-bold">Add Employee</h1>
-        </div>
+<div class="max-w-2xl">
+    <div class="mb-8">
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Directory</p>
+        <h1 class="text-4xl font-bold text-slate-900">Add Employee</h1>
+    </div>
 
-        <div class="card border-0 shadow-lg">
-            <div class="card-body p-5">
-                <form method="POST" action="{{ route('employees.store') }}">
-                    @csrf
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <form method="POST" action="{{ route('employees.store') }}" class="space-y-6">
+            @csrf
 
-                    <div class="mb-4">
-                        <label for="name" class="form-label fw-semibold text-uppercase small">Name</label>
-                        <input type="text" id="name" name="name" value="{{ old('name') }}" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="" required>
-                        @error('name')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold text-uppercase small">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="" required>
-                        @error('email')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-6">
-                            <label for="password" class="form-label fw-semibold text-uppercase small">Password</label>
-                            <input type="password" id="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="" required>
-                            @error('password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="password_confirmation" class="form-label fw-semibold text-uppercase small">Confirm Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg" placeholder="" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="department" class="form-label fw-semibold text-uppercase small">Department</label>
-                        <input type="text" id="department" name="department" value="{{ old('department') }}" class="form-control form-control-lg @error('department') is-invalid @enderror" placeholder="" required>
-                        @error('department')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="position" class="form-label fw-semibold text-uppercase small">Position</label>
-                        <input type="text" id="position" name="position" value="{{ old('position') }}" class="form-control form-control-lg @error('position') is-invalid @enderror" placeholder="" required>
-                        @error('position')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-6">
-                            <label for="date_hired" class="form-label fw-semibold text-uppercase small">Date Hired</label>
-                            <input type="date" id="date_hired" name="date_hired" value="{{ old('date_hired') }}" class="form-control form-control-lg @error('date_hired') is-invalid @enderror" placeholder="dd/mm/yyyy" required>
-                            @error('date_hired')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label fw-semibold text-uppercase small">Phone</label>
-                            <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="form-control form-control-lg @error('phone') is-invalid @enderror" placeholder="" required>
-                            @error('phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-5">
-                        <label for="address" class="form-label fw-semibold text-uppercase small">Address</label>
-                        <textarea id="address" name="address" rows="4" class="form-control form-control-lg @error('address') is-invalid @enderror" placeholder="" required>{{ old('address') }}</textarea>
-                        @error('address')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="d-flex gap-3">
-                        <button type="submit" class="btn btn-primary btn-lg px-5">Save Employee</button>
-                        <a href="{{ route('employees.index') }}" class="btn btn-secondary btn-lg px-5">Cancel</a>
-                    </div>
-                </form>
+            <!-- Name Field -->
+            <div>
+                <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('name') border-red-500 @enderror" required>
+                @error('name')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
             </div>
-        </div>
+
+            <!-- Email Field -->
+            <div>
+                <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('email') border-red-500 @enderror" required>
+                @error('email')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+            </div>
+
+            <!-- Password Fields -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('password') border-red-500 @enderror" required>
+                    @error('password')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">Confirm Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition" required>
+                </div>
+            </div>
+
+            <!-- Department & Position -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="department" class="block text-sm font-semibold text-slate-700 mb-2">Department</label>
+                    <input type="text" id="department" name="department" value="{{ old('department') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('department') border-red-500 @enderror" required>
+                    @error('department')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="position" class="block text-sm font-semibold text-slate-700 mb-2">Position</label>
+                    <input type="text" id="position" name="position" value="{{ old('position') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('position') border-red-500 @enderror" required>
+                    @error('position')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <!-- Date Hired & Phone -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="date_hired" class="block text-sm font-semibold text-slate-700 mb-2">Date Hired</label>
+                    <input type="date" id="date_hired" name="date_hired" value="{{ old('date_hired') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('date_hired') border-red-500 @enderror" required>
+                    @error('date_hired')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
+                    <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('phone') border-red-500 @enderror" required>
+                    @error('phone')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <!-- Address Field -->
+            <div>
+                <label for="address" class="block text-sm font-semibold text-slate-700 mb-2">Address</label>
+                <textarea id="address" name="address" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('address') border-red-500 @enderror" required>{{ old('address') }}</textarea>
+                @error('address')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3 pt-4">
+                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition shadow-md">
+                    Save Employee
+                </button>
+                <a href="{{ route('employees.index') }}" class="px-6 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

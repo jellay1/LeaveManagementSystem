@@ -1,81 +1,121 @@
-﻿@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'Register')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="row gx-0 vh-100">
-        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center position-relative" style="background-image: url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,.65);"></div>
-            <div class="position-relative text-white p-5" style="max-width: 450px; z-index: 1;">
-                <div class="mb-5">
-                    <span class="text-uppercase text-muted small">Leave Management</span>
-                    <h1 class="display-5 fw-bold mt-3">Join the team.</h1>
-                    <p class="lead text-white-75">Create your account to request leave, view balances, and collaborate with your manager.</p>
+<div class="flex h-screen w-full overflow-hidden">
+    <!-- Left Side: Image & Branding -->
+    <div class="hidden md:flex md:w-1/2 relative bg-slate-900">
+        <img src="{{ asset('images/login-bg.png') }}" alt="Office Background" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale">
+        
+        <!-- Logo at Top Left -->
+        <div class="absolute top-16 left-16 z-10">
+            <div class="text-white select-none">
+                <div class="text-7xl font-bold tracking-tighter leading-[0.8] mb-1">LEAVE</div>
+                <div class="text-7xl font-bold tracking-tighter leading-[0.8] flex items-center">
+                    <span class="mr-2">.OS</span>
                 </div>
-
-                <div class="card bg-white bg-opacity-10 border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <p class="text-uppercase text-muted small mb-3">Quick start</p>
-                        <p class="small mb-0">Register now to begin managing leave applications, tracking your balances, and keeping your team in sync.</p>
-                    </div>
-                </div>
+                <div class="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em] mt-8">ACME CORPORATION // HR OS</div>
             </div>
         </div>
 
-        <div class="col-lg-6 d-flex align-items-center justify-content-center bg-light">
-            <div class="w-100" style="max-width: 420px;">
-                <div class="text-center mb-4">
-                    <span class="text-uppercase text-muted small">Create account</span>
-                    <h2 class="fw-bold mt-2">Register</h2>
-                    <p class="text-muted">Sign up to manage your leave requests and approvals.</p>
+        <!-- Quote/Branding at Bottom Left -->
+        <div class="absolute bottom-16 left-16 z-10">
+            <div class="max-w-[420px]">
+                <p class="text-2xl font-bold text-white tracking-tight leading-tight italic opacity-90">
+                    "The simplest way to manage your team's presence and focus on what matters."
+                </p>
+                <div class="h-1 w-12 bg-white mt-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Register Form -->
+    <div class="w-full md:w-1/2 flex items-center justify-center bg-white p-12 overflow-y-auto">
+        <div class="w-full max-w-[360px] py-12">
+            <div class="mb-16">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mb-6">REGISTRATION</p>
+                <h1 class="text-6xl font-bold text-slate-900 tracking-tight leading-[1.1]">Join</h1>
+                <h1 class="text-6xl font-bold text-slate-900 tracking-tight leading-[1.1]">us.</h1>
+                <p class="text-sm text-slate-400 mt-6 font-medium">Create your account to start managing leave requests.</p>
+            </div>
+
+            <form method="POST" action="{{ route('register') }}" class="space-y-8">
+                @csrf
+
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label for="name" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">FULL NAME</label>
+                    <input 
+                        id="name" 
+                        type="text" 
+                        name="name" 
+                        value="{{ old('name') }}" 
+                        required 
+                        autofocus 
+                        class="w-full px-4 py-4 border border-slate-200 rounded-none focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all text-sm placeholder:text-slate-300"
+                        placeholder="John Doe">
+                    @error('name')
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <form method="POST" action="{{ route('register') }}">
-                            @csrf
-
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus class="form-control @error('name') is-invalid @enderror">
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input id="email" type="email" name="email" value="{{ old('email') }}" required class="form-control @error('email') is-invalid @enderror">
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input id="password" type="password" name="password" required class="form-control @error('password') is-invalid @enderror">
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                <input id="password_confirmation" type="password" name="password_confirmation" required class="form-control @error('password_confirmation') is-invalid @enderror">
-                                @error('password_confirmation')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <button type="submit" class="btn btn-dark w-100 py-2">Register</button>
-                        </form>
-                    </div>
+                <!-- Email -->
+                <div class="space-y-2">
+                    <label for="email" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">EMAIL</label>
+                    <input 
+                        id="email" 
+                        type="email" 
+                        name="email" 
+                        value="{{ old('email') }}" 
+                        required 
+                        class="w-full px-4 py-4 border border-slate-200 rounded-none focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all text-sm placeholder:text-slate-300"
+                        placeholder="john@acme.com">
+                    @error('email')
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <div class="text-center mt-4">
-                    <p class="mb-0 text-muted">Already registered? <a href="{{ route('login') }}" class="text-decoration-none">Sign in</a></p>
+                <!-- Password -->
+                <div class="space-y-2">
+                    <label for="password" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">PASSWORD</label>
+                    <input 
+                        id="password" 
+                        type="password" 
+                        name="password" 
+                        required 
+                        class="w-full px-4 py-4 border border-slate-200 rounded-none focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all text-sm placeholder:text-slate-300"
+                        placeholder="••••••••">
+                    @error('password')
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
+
+                <!-- Confirm Password -->
+                <div class="space-y-2">
+                    <label for="password_confirmation" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">CONFIRM PASSWORD</label>
+                    <input 
+                        id="password_confirmation" 
+                        type="password" 
+                        name="password_confirmation" 
+                        required 
+                        class="w-full px-4 py-4 border border-slate-200 rounded-none focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all text-sm placeholder:text-slate-300"
+                        placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 rounded-none transition-all flex items-center justify-between px-8 group">
+                    <span class="text-xs uppercase tracking-[0.2em]">Create account</span>
+                    <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-16 pt-8 border-t border-slate-100">
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                    Already have an account? 
+                    <a href="{{ route('login') }}" class="text-slate-900 hover:underline decoration-2 ml-2">Sign in</a>
+                </p>
             </div>
         </div>
     </div>

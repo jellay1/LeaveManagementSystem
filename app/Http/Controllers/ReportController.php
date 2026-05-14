@@ -19,6 +19,7 @@ class ReportController extends Controller
         $pending  = LeaveRequest::where('status', 'pending')->count();
         $approved = LeaveRequest::where('status', 'approved')->count();
         $rejected = LeaveRequest::where('status', 'rejected')->count();
+        $totalEmployees = Employee::count();
 
         $onLeaveToday = LeaveRequest::where('status', 'approved')
             ->whereDate('start_date', '<=', $today)
@@ -62,6 +63,7 @@ class ReportController extends Controller
             'pending',
             'approved',
             'rejected',
+            'totalEmployees',
             'onLeaveToday',
             'deptChart',
             'departmentSummary'

@@ -3,110 +3,139 @@
 @section('title', 'Reports')
 
 @section('content')
-<div class="page-heading mb-4 d-flex justify-content-between align-items-center">
+{{-- ── Page Header ────────────────────────────────────────────── --}}
+<div class="flex items-center justify-between mb-8">
     <div>
-        <div class="page-label">Analytics</div>
-        <h1 class="page-title">Reports.</h1>
+        <div class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">Analytics</div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Reports.</h1>
     </div>
-    <a href="{{ route('reports.export-csv') }}" class="btn btn-dark">
-        <i class="bi bi-download me-2"></i>Export CSV
+    <a href="{{ route('reports.export-csv') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-all shadow-sm active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        <span>Export CSV</span>
     </a>
 </div>
 
-{{-- ── Stat Cards ─────────────────────────────────────────────── --}}
-<div class="card border mb-4" style="border-radius:.85rem;overflow:hidden;">
-    <div class="row g-0 text-start" id="report-stats">
-
-        <div class="col-6 col-md-3 p-4 border-end border-bottom border-md-bottom-0">
-            <div class="text-uppercase text-muted small mb-2" style="letter-spacing:.18em;font-size:.72rem;">Pending</div>
-            <div class="fw-bold" style="font-size:2rem;line-height:1;">{{ $pending }}</div>
+{{-- ── Stat Cards Grid ───────────────────────────────────────── --}}
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    {{-- Pending Approvals --}}
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="flex justify-between items-start mb-4">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Pending Approvals</div>
+            <div class="p-2.5 bg-amber-50 rounded-xl text-amber-500 group-hover:scale-110 transition-transform duration-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
         </div>
+        <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $pending }}</div>
+        <div class="text-[11px] text-slate-500 font-medium">across organization</div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors duration-500"></div>
+    </div>
 
-        <div class="col-6 col-md-3 p-4 border-end border-bottom border-md-bottom-0">
-            <div class="text-uppercase text-muted small mb-2" style="letter-spacing:.18em;font-size:.72rem;">Approved</div>
-            <div class="fw-bold" style="font-size:2rem;line-height:1;">{{ $approved }}</div>
+    {{-- On Leave Today --}}
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="flex justify-between items-start mb-4">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">On Leave Today</div>
+            <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-500 group-hover:scale-110 transition-transform duration-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
         </div>
+        <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $onLeaveToday }}</div>
+        <div class="text-[11px] text-slate-500 font-medium">approved absences</div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors duration-500"></div>
+    </div>
 
-        <div class="col-6 col-md-3 p-4 border-end">
-            <div class="text-uppercase text-muted small mb-2" style="letter-spacing:.18em;font-size:.72rem;">Rejected</div>
-            <div class="fw-bold" style="font-size:2rem;line-height:1;">{{ $rejected }}</div>
+    {{-- Approved (YTD) --}}
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="flex justify-between items-start mb-4">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Approved (YTD)</div>
+            <div class="p-2.5 bg-blue-50 rounded-xl text-blue-500 group-hover:scale-110 transition-transform duration-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </div>
         </div>
+        <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $approved }}</div>
+        <div class="text-[11px] text-slate-500 font-medium">cumulative total</div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors duration-500"></div>
+    </div>
 
-        <div class="col-6 col-md-3 p-4">
-            <div class="text-uppercase text-muted small mb-2" style="letter-spacing:.18em;font-size:.72rem;">On Leave Today</div>
-            <div class="fw-bold" style="font-size:2rem;line-height:1;">{{ $onLeaveToday }}</div>
+    {{-- Total Employees --}}
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="flex justify-between items-start mb-4">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Total Employees</div>
+            <div class="p-2.5 bg-purple-50 rounded-xl text-purple-500 group-hover:scale-110 transition-transform duration-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
         </div>
-
+        <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $totalEmployees }}</div>
+        <div class="text-[11px] text-slate-500 font-medium">active headcount</div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-colors duration-500"></div>
     </div>
 </div>
 
 {{-- ── Department Breakdown Chart ─────────────────────────────── --}}
-<div class="card border mb-4" style="border-radius:.85rem;overflow:hidden;">
-    <div class="card-body p-4">
-        <div class="text-uppercase text-muted small mb-3" style="letter-spacing:.18em;font-size:.72rem;">Department Breakdown</div>
-        <div style="position:relative;height:240px;">
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden mb-8 shadow-sm">
+    <div class="p-8">
+        <div class="text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em] mb-8">Department Breakdown</div>
+        <div class="h-[320px] w-full">
             <canvas id="deptChart"></canvas>
         </div>
     </div>
 </div>
 
 {{-- ── Department Summary Table ──────────────────────────────── --}}
-<div class="card border" style="border-radius:.85rem;overflow:hidden;">
-    <div class="card-body p-0">
-        <div class="px-4 pt-4 pb-2">
-            <div class="text-uppercase text-muted small" style="letter-spacing:.18em;font-size:.72rem;">Department Summary</div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle" style="font-size:.88rem;">
-                <thead>
-                    <tr class="border-top border-bottom">
-                        <th class="px-4 py-3 text-uppercase text-muted fw-semibold" style="letter-spacing:.14em;font-size:.72rem;font-weight:600;">Department</th>
-                        <th class="py-3 text-uppercase text-muted fw-semibold" style="letter-spacing:.14em;font-size:.72rem;">Pending</th>
-                        <th class="py-3 text-uppercase text-muted fw-semibold" style="letter-spacing:.14em;font-size:.72rem;">Approved</th>
-                        <th class="py-3 text-uppercase text-muted fw-semibold" style="letter-spacing:.14em;font-size:.72rem;">Rejected</th>
-                        <th class="py-3 text-uppercase text-muted fw-semibold" style="letter-spacing:.14em;font-size:.72rem;">Total Days</th>
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+    <div class="px-8 py-6 border-b border-slate-100">
+        <div class="text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Department Summary</div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50/50">
+                    <th class="px-8 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-[0.15em] border-b border-slate-200">Department</th>
+                    <th class="px-8 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-[0.15em] border-b border-slate-200">Pending</th>
+                    <th class="px-8 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-[0.15em] border-b border-slate-200">Approved</th>
+                    <th class="px-8 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-[0.15em] border-b border-slate-200">Rejected</th>
+                    <th class="px-8 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-[0.15em] border-b border-slate-200">Total Days</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @forelse($departmentSummary as $row)
+                    <tr class="hover:bg-slate-50/80 transition-colors group">
+                        <td class="px-8 py-5 font-bold text-slate-900">{{ $row['department'] }}</td>
+                        <td class="px-8 py-5 text-sm font-medium {{ $row['pending'] > 0 ? 'text-amber-600' : 'text-slate-600' }}">
+                            {{ $row['pending'] }}
+                        </td>
+                        <td class="px-8 py-5 text-sm font-medium text-slate-600">
+                            {{ $row['approved'] }}
+                        </td>
+                        <td class="px-8 py-5 text-sm font-medium {{ $row['rejected'] > 0 ? 'text-red-600' : 'text-slate-600' }}">
+                            {{ $row['rejected'] }}
+                        </td>
+                        <td class="px-8 py-5 text-sm font-bold text-slate-900">
+                            {{ $row['total_days'] }}
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse($departmentSummary as $row)
-                        <tr>
-                            <td class="px-4 py-3 fw-semibold">{{ $row['department'] }}</td>
-                            <td class="py-3">
-                                @if($row['pending'] > 0)
-                                    <span style="color:#d97706;">{{ $row['pending'] }}</span>
-                                @else
-                                    {{ $row['pending'] }}
-                                @endif
-                            </td>
-                            <td class="py-3">{{ $row['approved'] }}</td>
-                            <td class="py-3">
-                                @if($row['rejected'] > 0)
-                                    <span style="color:#dc3545;">{{ $row['rejected'] }}</span>
-                                @else
-                                    {{ $row['rejected'] }}
-                                @endif
-                            </td>
-                            <td class="py-3">
-                                @if($row['total_days'] > 0)
-                                    <span style="color:#dc3545;">{{ $row['total_days'] }}</span>
-                                @else
-                                    {{ $row['total_days'] }}
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">No department data available.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-8 py-12 text-center text-slate-400 text-sm italic">
+                            No department data available.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
-{{-- ── Chart.js ──────────────────────────────────────────────── --}}
+{{-- ── Chart.js Implementation ────────────────────────────────── --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function () {
@@ -125,23 +154,26 @@
                 {
                     label: 'Approved',
                     data: approved,
-                    backgroundColor: '#22c55e',
+                    backgroundColor: '#10b981', // Emerald 500
                     borderRadius: 4,
-                    barPercentage: 0.55,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.6,
                 },
                 {
                     label: 'Pending',
                     data: pending,
-                    backgroundColor: '#eab308',
+                    backgroundColor: '#f59e0b', // Amber 500
                     borderRadius: 4,
-                    barPercentage: 0.55,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.6,
                 },
                 {
                     label: 'Rejected',
                     data: rejected,
-                    backgroundColor: '#ef4444',
+                    backgroundColor: '#ef4444', // Red 500
                     borderRadius: 4,
-                    barPercentage: 0.55,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.6,
                 },
             ],
         },
@@ -153,31 +185,46 @@
                     display: false,
                 },
                 tooltip: {
-                    mode: 'index',
-                    intersect: false,
+                    backgroundColor: '#1e293b',
+                    padding: 12,
+                    titleFont: { size: 12, weight: 'bold' },
+                    bodyFont: { size: 12 },
+                    cornerRadius: 8,
+                    displayColors: true,
                 },
             },
             scales: {
                 x: {
-                    offset: true,
+                    stacked: true, // Use stacking to center the label under the bars even if only one bar exists
                     grid: { display: false },
-                    border: { display: false },
+                    border: { 
+                        display: true,
+                        color: '#e2e8f0', // Slate 200
+                        width: 1
+                    },
                     ticks: {
-                        color: '#6c757d',
-                        font: { size: 11 },
+                        color: '#475569', // Darker Slate 600
+                        font: { size: 11, weight: '600' },
+                        padding: 12
                     },
                 },
                 y: {
+                    stacked: true, // Keep stacking consistent
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0,0,0,.05)',
+                        color: '#f1f5f9',
                         drawBorder: false,
                     },
-                    border: { display: false, dash: [4, 4] },
+                    border: { 
+                        display: true,
+                        color: '#e2e8f0', // Slate 200
+                        width: 1
+                    },
                     ticks: {
-                        color: '#6c757d',
+                        color: '#94a3b8',
                         precision: 0,
-                        font: { size: 11 },
+                        font: { size: 10, weight: '600' },
+                        padding: 10
                     },
                 },
             },
@@ -186,3 +233,4 @@
 })();
 </script>
 @endsection
+

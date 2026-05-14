@@ -3,45 +3,49 @@
 @section('title', 'Edit Leave Type')
 
 @section('content')
-<div class="space-y-6">
-    <div class="space-y-2">
-        <div class="text-xs uppercase tracking-[0.4em] text-slate-500">Configuration</div>
-        <h1 class="text-4xl font-semibold tracking-tight text-slate-950">Edit Leave Type</h1>
-        <p class="max-w-2xl text-sm text-slate-600">Update the leave category and control whether requests require manager approval.</p>
+<div class="max-w-2xl">
+    <div class="mb-8">
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Configuration</p>
+        <h1 class="text-4xl font-bold text-slate-900">Edit Leave Type</h1>
+        <p class="text-slate-600 mt-2">Update the leave category and control whether requests require manager approval.</p>
     </div>
 
-    <div class="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm">
-        <div class="p-8">
-            <form method="POST" action="{{ route('leave-types.update', $leaveType) }}" class="space-y-6">
-                @csrf
-                @method('PUT')
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <form method="POST" action="{{ route('leave-types.update', $leaveType) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div class="space-y-2">
-                        <label for="name" class="text-sm font-semibold text-slate-700">Leave Type</label>
-                        <input type="text" id="name" name="name" value="{{ old('name', $leaveType->name) }}" class="w-full rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none ring-1 ring-transparent transition focus:border-black focus:ring-black @error('name') border-red-500 ring-red-200 @enderror" required>
-                        @error('name')<p class="text-sm text-red-500">{{ $message }}</p>@enderror
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="annual_allocation" class="text-sm font-semibold text-slate-700">Annual Allocation (days)</label>
-                        <input type="number" id="annual_allocation" name="annual_allocation" value="{{ old('annual_allocation', $leaveType->annual_allocation) }}" class="w-full rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none ring-1 ring-transparent transition focus:border-black focus:ring-black @error('annual_allocation') border-red-500 ring-red-200 @enderror" required>
-                        @error('annual_allocation')<p class="text-sm text-red-500">{{ $message }}</p>@enderror
-                    </div>
+            <!-- Leave Type & Annual Allocation -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">Leave Type</label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $leaveType->name) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('name') border-red-500 @enderror" required>
+                    @error('name')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
-
-                <div class="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                    <input type="hidden" name="requires_approval" value="0">
-                    <input type="checkbox" id="requires_approval" name="requires_approval" value="1" {{ old('requires_approval', $leaveType->requires_approval) ? 'checked' : '' }} class="h-5 w-5 rounded-md border-slate-300 text-black focus:ring-black">
-                    <label for="requires_approval" class="text-sm font-medium text-slate-700">Requires manager approval</label>
+                <div>
+                    <label for="annual_allocation" class="block text-sm font-semibold text-slate-700 mb-2">Annual Allocation (days)</label>
+                    <input type="number" id="annual_allocation" name="annual_allocation" value="{{ old('annual_allocation', $leaveType->annual_allocation) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition @error('annual_allocation') border-red-500 @enderror" required>
+                    @error('annual_allocation')<p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
+            </div>
 
-                <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                    <a href="{{ route('leave-types.index') }}" class="inline-flex justify-center rounded-3xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Cancel</a>
-                    <button type="submit" class="inline-flex justify-center rounded-3xl bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-900">Update Leave Type</button>
-                </div>
-            </form>
-        </div>
+            <!-- Approval Checkbox -->
+            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 flex gap-3">
+                <input type="hidden" name="requires_approval" value="0">
+                <input type="checkbox" id="requires_approval" name="requires_approval" value="1" {{ old('requires_approval', $leaveType->requires_approval) ? 'checked' : '' }} class="mt-1 w-5 h-5 text-slate-900 border-slate-300 rounded focus:ring-2 focus:ring-slate-900">
+                <label for="requires_approval" class="text-sm font-medium text-slate-700">Requires manager approval for leave requests</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3 pt-4">
+                <a href="{{ route('leave-types.index') }}" class="px-6 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition">
+                    Cancel
+                </a>
+                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition shadow-md">
+                    Update Leave Type
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

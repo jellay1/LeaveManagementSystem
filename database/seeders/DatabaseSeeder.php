@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'HR Admin',
             'email' => 'hr@acme.com',
-            'password' => 'hr12345',
+            'password' => 'password',
             'role' => 'hr_admin',
         ]);
 
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Engineering Manager',
             'email' => 'manager.eng@acme.com',
-            'password' => 'managert1k',
+            'password' => 'password',
             'role' => 'manager',
         ]);
 
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Alice Employee',
             'email' => 'alice@acme.com',
-            'password' => 'employee123',
+            'password' => 'password',
             'role' => 'employee',
         ]);
 

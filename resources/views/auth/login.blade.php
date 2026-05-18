@@ -18,30 +18,6 @@
                 <div class="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em] mt-8">ACME CORPORATION // HR OS</div>
             </div>
         </div>
-
-        <!-- Demo Credentials at Bottom Left -->
-        <div class="absolute bottom-16 left-16 z-10">
-            <div class="bg-white p-10 w-[420px] shadow-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">DEMO CREDENTIALS</p>
-                <div class="space-y-3 text-[11px] font-bold text-slate-800">
-                    <div class="flex items-center gap-4">
-                        <span class="text-slate-300 w-16">HR</span>
-                        <span class="text-slate-400">—</span>
-                        <span>hr@acme.com / hr12345</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-slate-300 w-16">Manager</span>
-                        <span class="text-slate-400">—</span>
-                        <span>manager.eng@acme.com / managert1k</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-slate-300 w-16">Employee</span>
-                        <span class="text-slate-400">—</span>
-                        <span>alice@acme.com / employee123</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Right Side: Login Form -->
@@ -92,9 +68,6 @@
                         <input type="checkbox" name="remember" id="remember" class="w-4 h-4 border-slate-200 rounded-none accent-slate-900">
                         <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider group-hover:text-slate-600 transition-colors">Remember me</span>
                     </label>
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-[11px] font-black text-slate-900 uppercase tracking-widest hover:underline decoration-2">Forgot?</a>
-                    @endif
                 </div>
 
                 <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 rounded-none transition-all flex items-center justify-between px-8 group">
@@ -104,13 +77,6 @@
                     </svg>
                 </button>
             </form>
-
-            <div class="mt-16 pt-8 border-t border-slate-100">
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">
-                    No account? 
-                    <a href="{{ route('register') }}" class="text-slate-900 hover:underline decoration-2 ml-2">Create one</a>
-                </p>
-            </div>
         </div>
     </div>
 </div>

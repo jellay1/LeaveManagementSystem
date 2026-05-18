@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeaveRequest;
+use App\Models\LeaveBalance;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 
 class ManagerDashboardController extends Controller
@@ -108,6 +110,18 @@ class ManagerDashboardController extends Controller
             'remarks' => request('remarks'),
         ]);
 
+        // Increment the leave balance for the employee
+        $days = Carbon::parse($leaveRequest->start_date)->diffInDays(Carbon::parse($leaveRequest->end_date)) + 1;
+        $balance = LeaveBalance::firstOrCreate([
+            'user_id' => $leaveRequest->user_id,
+            'leave_type_id' => $leaveRequest->leave_type_id,
+            'year' => Carbon::parse($leaveRequest->start_date)->year,
+        ]);
+        $balance->increment('used_days', $days);
+
+        // Send approval notification
+        NotificationService::leaveRequestApproved($leaveRequest);
+
         return redirect()->route('manager-dashboard')->with('success', 'Leave request approved successfully.');
     }
 
@@ -126,6 +140,9 @@ class ManagerDashboardController extends Controller
             'approved_by' => $user->id,
             'remarks' => request('remarks'),
         ]);
+
+        // Send rejection notification
+        NotificationService::leaveRequestRejected($leaveRequest);
 
         return redirect()->route('manager-dashboard')->with('success', 'Leave request rejected.');
     }

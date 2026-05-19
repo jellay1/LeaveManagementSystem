@@ -134,30 +134,40 @@ class LeaveRequestController extends Controller
             abort(403);
         }
 
-        if ($leaveRequest->status !== 'pending') {
-            return redirect()->route('leave-requests.index')->with('warning', 'Only pending requests can be updated.');
-        }
-
         $data = $request->validated();
-        $leaveRequest->status = $data['status'];
+        $oldStatus = $leaveRequest->status;
+        $newStatus = $data['status'];
+
+        $leaveRequest->status = $newStatus;
         $leaveRequest->approved_by = auth()->id();
         $leaveRequest->remarks = $data['remarks'] ?? null;
         $leaveRequest->save();
 
-        if ($data['status'] === 'approved') {
-            $days = Carbon::parse($leaveRequest->start_date)->diffInDays(Carbon::parse($leaveRequest->end_date)) + 1;
-            $balance = LeaveBalance::firstOrCreate([
-                'user_id' => $leaveRequest->user_id,
-                'leave_type_id' => $leaveRequest->leave_type_id,
-                'year' => Carbon::parse($leaveRequest->start_date)->year,
-            ]);
-            $balance->increment('used_days', $days);
+        $days = Carbon::parse($leaveRequest->start_date)->diffInDays(Carbon::parse($leaveRequest->end_date)) + 1;
+        $balance = LeaveBalance::firstOrCreate([
+            'user_id' => $leaveRequest->user_id,
+            'leave_type_id' => $leaveRequest->leave_type_id,
+            'year' => Carbon::parse($leaveRequest->start_date)->year,
+        ]);
 
-            // Send approval notification
-            NotificationService::leaveRequestApproved($leaveRequest);
-        } elseif ($data['status'] === 'rejected') {
-            // Send rejection notification
-            NotificationService::leaveRequestRejected($leaveRequest);
+        // Adjust balance if status transitioned into or out of 'approved'
+        if ($oldStatus !== 'approved' && $newStatus === 'approved') {
+            $balance->increment('used_days', $days);
+        } elseif ($oldStatus === 'approved' && $newStatus !== 'approved') {
+            $balance->decrement('used_days', $days);
+        }
+
+        // Send notifications based on the new status
+        if ($oldStatus !== $newStatus) {
+            if ($newStatus === 'approved') {
+                NotificationService::leaveRequestApproved($leaveRequest);
+            } elseif ($newStatus === 'rejected') {
+                NotificationService::leaveRequestRejected($leaveRequest);
+            } else {
+                NotificationService::leaveRequestUpdated($leaveRequest);
+            }
+        } else {
+            NotificationService::leaveRequestUpdated($leaveRequest);
         }
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');
@@ -173,9 +183,10 @@ class LeaveRequestController extends Controller
             return redirect()->route('leave-requests.index')->with('warning', 'Only pending requests can be removed.');
         }
 
-        $leaveRequest->delete();
+        $leaveRequest->status = 'cancelled';
+        $leaveRequest->save();
 
-        return redirect()->route('leave-requests.index')->with('success', 'Leave request deleted successfully.');
+        return redirect()->route('leave-requests.index')->with('success', 'Leave request cancelled successfully.');
     }
 
     protected function authorizeRequestAccess(LeaveRequest $leaveRequest)

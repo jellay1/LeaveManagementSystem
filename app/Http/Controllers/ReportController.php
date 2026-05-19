@@ -14,20 +14,35 @@ class ReportController extends Controller
     {
         $year  = now()->year;
         $today = Carbon::today();
+        $user  = auth()->user();
+        $isManager = $user->hasRole('manager');
+        $department = $isManager ? optional($user->employee)->department : null;
 
         // ── Top stat cards ──────────────────────────────────────────────
-        $pending  = LeaveRequest::where('status', 'pending')->count();
-        $approved = LeaveRequest::where('status', 'approved')->count();
-        $rejected = LeaveRequest::where('status', 'rejected')->count();
-        $totalEmployees = Employee::count();
-
-        $onLeaveToday = LeaveRequest::where('status', 'approved')
+        $pendingQuery = LeaveRequest::where('status', 'pending');
+        $approvedQuery = LeaveRequest::where('status', 'approved');
+        $rejectedQuery = LeaveRequest::where('status', 'rejected');
+        $employeeQuery = Employee::query();
+        $onLeaveTodayQuery = LeaveRequest::where('status', 'approved')
             ->whereDate('start_date', '<=', $today)
-            ->whereDate('end_date',   '>=', $today)
-            ->count();
+            ->whereDate('end_date',   '>=', $today);
+
+        if ($isManager && $department) {
+            $pendingQuery->whereHas('user.employee', fn($q) => $q->where('department', $department));
+            $approvedQuery->whereHas('user.employee', fn($q) => $q->where('department', $department));
+            $rejectedQuery->whereHas('user.employee', fn($q) => $q->where('department', $department));
+            $employeeQuery->where('department', $department);
+            $onLeaveTodayQuery->whereHas('user.employee', fn($q) => $q->where('department', $department));
+        }
+
+        $pending = $pendingQuery->count();
+        $approved = $approvedQuery->count();
+        $rejected = $rejectedQuery->count();
+        $totalEmployees = $employeeQuery->count();
+        $onLeaveToday = $onLeaveTodayQuery->count();
 
         // ── Department bar chart data ────────────────────────────────────
-        $deptChart = LeaveRequest::select(
+        $deptChartQuery = LeaveRequest::select(
                 'employees.department',
                 DB::raw("SUM(CASE WHEN leave_requests.status = 'pending'  THEN 1 ELSE 0 END) as pending"),
                 DB::raw("SUM(CASE WHEN leave_requests.status = 'approved' THEN 1 ELSE 0 END) as approved"),
@@ -35,8 +50,13 @@ class ReportController extends Controller
                 DB::raw('COUNT(*) as total')
             )
             ->join('users',     'leave_requests.user_id', '=', 'users.id')
-            ->join('employees', 'employees.user_id',      '=', 'users.id')
-            ->groupBy('employees.department')
+            ->join('employees', 'employees.user_id',      '=', 'users.id');
+
+        if ($isManager && $department) {
+            $deptChartQuery->where('employees.department', $department);
+        }
+
+        $deptChart = $deptChartQuery->groupBy('employees.department')
             ->orderBy('employees.department')
             ->get();
 
@@ -57,6 +77,12 @@ class ReportController extends Controller
                                 }),
             ];
         });
+        // ── Active Headcount Directory ───────────────────────────────────
+        $directoryQuery = Employee::with('user');
+        if ($isManager && $department) {
+            $directoryQuery->where('department', $department);
+        }
+        $directoryEmployees = $directoryQuery->orderBy('department')->orderBy('position')->get();
 
         return view('reports.index', compact(
             'year',
@@ -66,13 +92,19 @@ class ReportController extends Controller
             'totalEmployees',
             'onLeaveToday',
             'deptChart',
-            'departmentSummary'
+            'departmentSummary',
+            'directoryEmployees'
         ));
     }
 
     public function exportCsv()
     {
-        // Get all leave requests with related data
+        $user = auth()->user();
+        if (!$user->hasRole('hr_admin')) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Get leave requests scoped by role/department
         $leaveRecords = LeaveRequest::with(['user', 'user.employee', 'leaveType', 'approver'])
             ->orderBy('created_at', 'desc')
             ->get();

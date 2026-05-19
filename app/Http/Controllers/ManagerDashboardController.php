@@ -22,25 +22,34 @@ class ManagerDashboardController extends Controller
         $today = Carbon::today()->toDateString();
         $year = Carbon::now()->year;
 
-        // Get all employees managed by this manager
-        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
+        // Get all employees in the manager's department (excluding themselves)
+        $managedEmployeeIds = \App\Models\Employee::where('department', $department)
+            ->where('user_id', '!=', $user->id)
+            ->pluck('user_id');
 
         // Get all leave requests from employees managed by this manager
         $allDepartmentRequests = LeaveRequest::query()
             ->whereIn('user_id', $managedEmployeeIds)
             ->with(['user', 'user.employee', 'leaveType', 'approver'])
+            ->latest()
             ->get();
 
         // Pending requests awaiting approval
         $pendingRequests = $allDepartmentRequests->filter(fn ($request) => $request->status === 'pending')->values();
+
+        // Recent requests from employees (any status)
+        $recentRequests = $allDepartmentRequests->take(5);
 
         // Summary statistics
         $pendingCount = $pendingRequests->count();
         $approvedCount = $allDepartmentRequests->filter(fn ($request) => $request->status === 'approved')->count();
         $rejectedCount = $allDepartmentRequests->filter(fn ($request) => $request->status === 'rejected')->count();
 
-        // Calculate leave days for pending requests
+        // Calculate leave days for pending requests and recent requests
         $pendingRequests->each(function ($request) {
+            $request->days = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+        });
+        $recentRequests->each(function ($request) {
             $request->days = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
         });
 
@@ -65,8 +74,9 @@ class ManagerDashboardController extends Controller
             ->filter(fn ($request) => Carbon::parse($request->created_at)->year === $year)
             ->count();
 
-        // Active Headcount in department
-        $activeEmployees = $user->managedEmployees()->count();
+        // Active Headcount in department (including the manager themselves)
+        $activeEmployees = \App\Models\Employee::where('department', $department)
+            ->count();
 
         // Manager's own leave balances
         $myBalances = \App\Models\LeaveBalance::with('leaveType')
@@ -80,6 +90,7 @@ class ManagerDashboardController extends Controller
         return view('manager-dashboard', compact(
             'department',
             'pendingRequests',
+            'recentRequests',
             'pendingCount',
             'approvedCount',
             'rejectedCount',
@@ -97,7 +108,10 @@ class ManagerDashboardController extends Controller
     public function approve(LeaveRequest $leaveRequest)
     {
         $user = auth()->user();
-        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
+        $department = optional($user->employee)->department;
+        $managedEmployeeIds = \App\Models\Employee::where('department', $department)
+            ->where('user_id', '!=', $user->id)
+            ->pluck('user_id');
 
         // Check authorization - can only approve requests from managed employees
         if (!$user->hasRole('manager') || !$managedEmployeeIds->contains($leaveRequest->user_id)) {
@@ -128,7 +142,10 @@ class ManagerDashboardController extends Controller
     public function reject(LeaveRequest $leaveRequest)
     {
         $user = auth()->user();
-        $managedEmployeeIds = $user->managedEmployees()->pluck('user_id');
+        $department = optional($user->employee)->department;
+        $managedEmployeeIds = \App\Models\Employee::where('department', $department)
+            ->where('user_id', '!=', $user->id)
+            ->pluck('user_id');
 
         // Check authorization - can only reject requests from managed employees
         if (!$user->hasRole('manager') || !$managedEmployeeIds->contains($leaveRequest->user_id)) {

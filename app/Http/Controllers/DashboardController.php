@@ -21,6 +21,11 @@ class DashboardController extends Controller
             return $this->employeeDashboard($user, $year);
         }
 
+        // Route managers to manager dashboard
+        if ($user->hasRole('manager') && !$user->hasRole('hr_admin')) {
+            return redirect()->route('manager-dashboard');
+        }
+
         // For managers and HR admins, show the main dashboard
         $department = optional($user->employee)->department;
 

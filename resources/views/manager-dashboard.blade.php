@@ -21,14 +21,14 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
             <div class="flex justify-between items-start mb-4">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Pending Approvals</div>
-                <div class="p-2.5 bg-amber-50 rounded-xl text-amber-500 group-hover:scale-110 transition-transform duration-500">
+                <div class="p-2.5 bg-amber-50 rounded-xl text-black group-hover:scale-110 transition-transform duration-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
             </div>
             <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $pendingCount ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">across organization</div>
+            <div class="text-[11px] text-slate-500 font-medium">in your department</div>
             <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors duration-500"></div>
         </div>
 
@@ -36,14 +36,14 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
             <div class="flex justify-between items-start mb-4">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">On Leave Today</div>
-                <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-500 group-hover:scale-110 transition-transform duration-500">
+                <div class="p-2.5 bg-emerald-50 rounded-xl text-black group-hover:scale-110 transition-transform duration-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
             </div>
             <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $onLeaveToday ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">approved absences</div>
+            <div class="text-[11px] text-slate-500 font-medium">department absences</div>
             <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors duration-500"></div>
         </div>
 
@@ -51,14 +51,14 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
             <div class="flex justify-between items-start mb-4">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Approved (YTD)</div>
-                <div class="p-2.5 bg-blue-50 rounded-xl text-blue-500 group-hover:scale-110 transition-transform duration-500">
+                <div class="p-2.5 bg-blue-50 rounded-xl text-black group-hover:scale-110 transition-transform duration-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
                 </div>
             </div>
             <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $approvedYtd ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">cumulative total</div>
+            <div class="text-[11px] text-slate-500 font-medium">department cumulative</div>
             <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors duration-500"></div>
         </div>
 
@@ -66,14 +66,14 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
             <div class="flex justify-between items-start mb-4">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Total Employees</div>
-                <div class="p-2.5 bg-purple-50 rounded-xl text-purple-500 group-hover:scale-110 transition-transform duration-500">
+                <div class="p-2.5 bg-purple-50 rounded-xl text-black group-hover:scale-110 transition-transform duration-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                 </div>
             </div>
             <div class="text-4xl font-bold text-slate-900 leading-none mb-2 tracking-tight">{{ $activeEmployees ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">active headcount</div>
+            <div class="text-[11px] text-slate-500 font-medium">department headcount</div>
             <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-colors duration-500"></div>
         </div>
     </div>
@@ -134,11 +134,11 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="p-6 border-b border-slate-200">
             <h2 class="text-xl font-bold text-slate-900">Recent Requests</h2>
-            <p class="text-sm text-slate-600 mt-1">Pending leave requests from your team.</p>
+            <p class="text-sm text-slate-600 mt-1">Recent leave requests from your team.</p>
         </div>
 
         <div class="divide-y divide-slate-200">
-            @forelse($pendingRequests->take(5) as $request)
+            @forelse($recentRequests as $request)
                 <div class="p-6 hover:bg-slate-50 transition">
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
                         <div class="sm:col-span-1">
@@ -151,25 +151,22 @@
                             </p>
                             <p class="text-xs text-slate-600 mt-1">{{ $request->days ?? 0 }} days</p>
                         </div>
-                        <div class="flex gap-2 justify-start sm:justify-end">
-                            <form action="{{ route('manager-dashboard.approve', $request) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition">
-                                    Approve
-                                </button>
-                            </form>
-                            <form action="{{ route('manager-dashboard.reject', $request) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-sm font-semibold rounded-lg transition">
-                                    Reject
-                                </button>
-                            </form>
+                        <div class="flex gap-2 justify-start sm:justify-end items-center">
+                            @if($request->status === 'pending')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Pending</span>
+                            @elseif($request->status === 'approved')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">Approved</span>
+                            @elseif($request->status === 'rejected')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Rejected</span>
+                            @elseif($request->status === 'cancelled')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800">Cancelled</span>
+                            @endif
                         </div>
                     </div>
                 </div>
             @empty
                 <div class="p-8 text-center text-slate-600">
-                    <p class="text-sm">No pending leave requests.</p>
+                    <p class="text-sm">No recent leave requests.</p>
                 </div>
             @endforelse
         </div>

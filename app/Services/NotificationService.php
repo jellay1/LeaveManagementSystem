@@ -114,4 +114,26 @@ class NotificationService
             'leave_request_id' => $leaveRequest->id,
         ]);
     }
+
+    /**
+     * Notify user when their leave request is updated.
+     */
+    public static function leaveRequestUpdated(LeaveRequest $leaveRequest)
+    {
+        $user = $leaveRequest->user;
+        $approverName = optional($leaveRequest->approver)->name ?? 'Admin';
+        $title = 'Leave Request Updated';
+        $message = "Your {$leaveRequest->leaveType->name} leave request from {$leaveRequest->start_date} to {$leaveRequest->end_date} has been updated by {$approverName}.";
+        if ($leaveRequest->remarks) {
+            $message .= " Remarks: {$leaveRequest->remarks}";
+        }
+
+        Notification::create([
+            'user_id' => $user->id,
+            'title' => $title,
+            'message' => $message,
+            'type' => 'leave_updated',
+            'leave_request_id' => $leaveRequest->id,
+        ]);
+    }
 }

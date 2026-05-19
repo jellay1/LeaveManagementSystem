@@ -93,7 +93,11 @@
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Signed In</p>
                     <div class="font-semibold text-slate-900 text-sm">{{ auth()->user()->name }}</div>
                     <div class="text-xs text-slate-600 mb-3">{{ auth()->user()->email }}</div>
-                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{{ strtoupper(auth()->user()->role) }}</div>
+                    @if(auth()->user()->role === 'employee')
+                        <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">
+                            EMPLOYEE
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full px-3 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Logout</button>

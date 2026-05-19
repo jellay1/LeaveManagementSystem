@@ -6,7 +6,12 @@
 <div class="space-y-8">
     <!-- Header -->
     <div>
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Hello, {{ auth()->user()->name }}</p>
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">
+            Hello, {{ auth()->user()->name }}
+            @if(auth()->user()->employee && auth()->user()->employee->position)
+                • {{ auth()->user()->employee->position }}
+            @endif
+        </p>
         <h1 class="text-4xl font-bold text-slate-900">Your Time Off</h1>
     </div>
 
@@ -103,6 +108,8 @@
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Pending</span>
                                 @elseif($request->status === 'rejected')
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Rejected</span>
+                                @elseif($request->status === 'cancelled')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800">Cancelled</span>
                                 @endif
                             </td>
                         </tr>

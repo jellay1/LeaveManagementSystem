@@ -3,7 +3,7 @@
 @section('title', 'Leave Type Details')
 
 @section('content')
-<div class="max-w-2xl">
+<div class="max-w-2xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Configuration</p>

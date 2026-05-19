@@ -3,7 +3,7 @@
 @section('title', 'Employee Details')
 
 @section('content')
-<div class="max-w-2xl">
+<div class="max-w-4xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Directory</p>
@@ -43,15 +43,17 @@
             <div class="p-6 space-y-6">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Date Hired</p>
-                    <p class="text-lg font-semibold text-slate-900 mt-1">{{ $employee->date_hired }}</p>
+                    <p class="text-lg font-semibold text-slate-900 mt-1">
+                        {{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('M d, Y') : '—' }}
+                    </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone</p>
-                    <p class="text-lg font-semibold text-slate-900 mt-1">{{ $employee->phone }}</p>
+                    <p class="text-lg font-semibold text-slate-900 mt-1">{{ $employee->phone ?? '—' }}</p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Address</p>
-                    <p class="text-sm text-slate-700 mt-1">{{ $employee->address }}</p>
+                    <p class="text-sm text-slate-700 mt-1">{{ $employee->address ?? '—' }}</p>
                 </div>
             </div>
         </div>

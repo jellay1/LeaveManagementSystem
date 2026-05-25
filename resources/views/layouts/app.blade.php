@@ -36,8 +36,8 @@
                         </a>
                     @endif
 
-                    {{-- My Leaves (Employee & Manager only) --}}
-                    @if(!auth()->user()->hasRole('hr_admin') || auth()->user()->hasRole('manager'))
+                    {{-- My Leaves (Employee only) --}}
+                    @if(auth()->user()->hasRole('employee'))
                         <a href="{{ route('leave-requests.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('leave-requests.index') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
                             <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('leave-requests.index') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h1V3a1 1 0 0 1 1-1zm12 7H5v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"/></svg>
                             <span>My Leaves</span>
@@ -58,8 +58,8 @@
 
                     {{-- Approvals (Manager & HR) --}}
                     @if(auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin'))
-                        <a href="{{ route('approvals') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('approvals') ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
-                            <svg class="w-5 h-5 transition-colors duration-200 {{ request()->routeIs('approvals') ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg>
+                        <a href="{{ route('approvals') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ (request()->routeIs('approvals') || request()->routeIs('leave-requests.index')) ? 'bg-slate-100 text-slate-900 font-semibold shadow-sm' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900 font-medium' }}">
+                            <svg class="w-5 h-5 transition-colors duration-200 {{ (request()->routeIs('approvals') || request()->routeIs('leave-requests.index')) ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M9.29 16.71a1 1 0 0 1-1.42 0l-3.6-3.59a1 1 0 0 1 1.42-1.42L9 14.59l7.29-7.3a1 1 0 0 1 1.42 1.42L9.29 16.71z"/></svg>
                             <span>Approvals</span>
                         </a>
                     @endif

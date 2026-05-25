@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Leave Requests')
+@section('title', (request()->routeIs('approvals') || auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin')) ? 'Approvals' : 'Leave Requests')
 
 @section('content')
 <div class="space-y-6">
@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">History</p>
-            <h1 class="text-4xl font-bold text-slate-900">My Leaves</h1>
+            <h1 class="text-4xl font-bold text-slate-900">{{ (request()->routeIs('approvals') || auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin')) ? 'Approvals' : 'My Leaves' }}</h1>
         </div>
         <a href="{{ route('leave-requests.create') }}" class="inline-flex items-center justify-center px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition shadow-md">
             Apply Leave
@@ -70,7 +70,7 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex gap-1 justify-end">
                                     <a href="{{ route('leave-requests.show', $request) }}" class="px-3 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded transition">View</a>
-                                    @if(auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin'))
+                                    @if(auth()->user()->hasRole('hr_admin') || (auth()->user()->hasRole('manager') && $request->user_id !== auth()->id()))
                                         @if($request->status === 'pending')
                                             <form action="{{ route('leave-requests.update', $request) }}" method="POST" class="inline">
                                                 @csrf

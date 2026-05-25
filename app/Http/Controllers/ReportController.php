@@ -77,12 +77,6 @@ class ReportController extends Controller
                                 }),
             ];
         });
-        // ── Active Headcount Directory ───────────────────────────────────
-        $directoryQuery = Employee::with('user');
-        if ($isManager && $department) {
-            $directoryQuery->where('department', $department);
-        }
-        $directoryEmployees = $directoryQuery->orderBy('department')->orderBy('position')->get();
 
         return view('reports.index', compact(
             'year',
@@ -92,8 +86,7 @@ class ReportController extends Controller
             'totalEmployees',
             'onLeaveToday',
             'deptChart',
-            'departmentSummary',
-            'directoryEmployees'
+            'departmentSummary'
         ));
     }
 

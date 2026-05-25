@@ -123,6 +123,10 @@ class LeaveRequestController extends Controller
             abort(403);
         }
 
+        if ($leaveRequest->user_id === auth()->id() && !auth()->user()->hasRole('hr_admin')) {
+            abort(403, 'You cannot edit your own leave request decision.');
+        }
+
         $this->authorizeRequestAccess($leaveRequest);
 
         return view('leave-requests.edit', compact('leaveRequest'));
@@ -132,6 +136,10 @@ class LeaveRequestController extends Controller
     {
         if (!auth()->user()->hasRole('manager') && !auth()->user()->hasRole('hr_admin')) {
             abort(403);
+        }
+
+        if ($leaveRequest->user_id === auth()->id() && !auth()->user()->hasRole('hr_admin')) {
+            return redirect()->route('leave-requests.index')->with('error', 'You cannot approve or reject your own leave request. It must be approved by HR.');
         }
 
         $data = $request->validated();

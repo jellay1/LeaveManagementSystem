@@ -50,22 +50,22 @@ class DatabaseSeeder extends Seeder
 
         // Create Employees
         User::factory()->create([
-            'name' => 'Alice Employee',
-            'email' => 'alice@acme.com',
+            'name' => 'Jella Gesim',
+            'email' => 'jelagesim@gmail.com',
             'password' => 'password',
             'role' => 'employee',
         ]);
 
         User::factory()->create([
-            'name' => 'Jane Employee',
-            'email' => 'jane@acme.com',
+            'name' => 'Athena Gumanoy',
+            'email' => 'athena@gmail.com',
             'password' => 'password',
             'role' => 'employee',
         ]);
 
         User::factory()->create([
-            'name' => 'Bob Employee',
-            'email' => 'bob@acme.com',
+            'name' => 'Jasper Ursal',
+            'email' => 'jasperursal@gmail.com',
             'password' => 'password',
             'role' => 'employee',
         ]);

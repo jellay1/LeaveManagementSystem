@@ -140,7 +140,7 @@
     </div>
 
     <!-- Manager/HR Approval Decision Form -->
-    @if($leaveRequest->status === 'pending' && (auth()->user()->hasRole('manager') || auth()->user()->hasRole('hr_admin')))
+    @if($leaveRequest->status === 'pending' && (auth()->user()->hasRole('hr_admin') || (auth()->user()->hasRole('manager') && $leaveRequest->user_id !== auth()->id())))
         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Approval Decision</h3>
             <form method="POST" action="{{ route('leave-requests.update', $leaveRequest) }}" class="space-y-4">

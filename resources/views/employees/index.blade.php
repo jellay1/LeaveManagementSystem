@@ -3,7 +3,27 @@
 @section('title', 'Employee List')
 
 @section('content')
-<div x-data="{ showModal: false }" class="space-y-6">
+<div x-data="{ 
+    showModal: false,
+    searchQuery: '{{ request('search') }}',
+    performSearch() {
+        let url = new URL(window.location.href);
+        if (this.searchQuery) {
+            url.searchParams.set('search', this.searchQuery);
+        } else {
+            url.searchParams.delete('search');
+        }
+        url.searchParams.delete('page'); // Reset to page 1 on new search
+        
+        fetch(url.toString())
+            .then(res => res.text())
+            .then(html => {
+                let doc = new DOMParser().parseFromString(html, 'text/html');
+                document.getElementById('table-container').innerHTML = doc.getElementById('table-container').innerHTML;
+                window.history.pushState({}, '', url);
+            });
+    }
+}" class="space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <div>
@@ -16,15 +36,15 @@
     </div>
 
     <!-- Search Bar -->
-    <form method="GET" action="{{ route('employees.index') }}" class="flex gap-2">
+    <div class="flex gap-2">
         <div class="flex-1 flex gap-2">
-            <input type="search" name="search" value="{{ request('search') }}" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition" placeholder="Search name or email...">
-            <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition">Search</button>
+            <input type="search" x-model="searchQuery" @input.debounce.300ms="performSearch()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition" placeholder="Search name or email...">
         </div>
-    </form>
+    </div>
 
     <!-- Employees Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div id="table-container">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-slate-50 border-b border-slate-200">
@@ -75,8 +95,9 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-6">
-        {{ $employees->links() }}
+        <div class="mt-6">
+            {{ $employees->links() }}
+        </div>
     </div>
 
     <!-- New Employee Modal -->

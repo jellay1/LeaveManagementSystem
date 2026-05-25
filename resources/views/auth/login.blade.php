@@ -15,7 +15,7 @@
                 <div class="text-7xl font-bold tracking-tighter leading-[0.8] flex items-center">
                     <span class="mr-2">.OS</span>
                 </div>
-                <div class="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em] mt-8">ACME CORPORATION // HR OS</div>
+
             </div>
         </div>
     </div>
